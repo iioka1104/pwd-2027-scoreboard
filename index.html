@@ -1287,8 +1287,7 @@
         return `<option value="${escapeHtml(c.no)}">#${escapeHtml(c.no)} ${escapeHtml(c.name)} (${t ? escapeHtml(t.name) : ""})</option>`;
       }).join("");
 
-      const csvSample = state.cars.map((c) => `${c.no},${c.name},${c.teamId},${c.owner || ""}`).join("
-");
+      const csvSample = state.cars.map((c) => `${c.no},${c.name},${c.teamId},${c.owner || ""}).join("\n");
 
       return `
         <section class="card">
