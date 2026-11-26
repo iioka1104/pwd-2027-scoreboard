@@ -1088,3 +1088,249 @@
           const fn = pendingAdminAction;
           pendingAdminAction = null;
           fn();
+}
+    }
+
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove("open");
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      if (!toast) return;
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(showToast._timer);
+      showToast._timer = setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2400);
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replace(/&/g, "&")
+        .replace(/</g, "<")
+        .replace(/>/g, ">")
+        .replace(/"/g, """)
+        .replace(/'/g, "'");
+    }
+
+    function render() {
+      const app = document.getElementById("app");
+      if (!app) return;
+      const { carPoints, teamRanking } = computeScores();
+
+      if (currentTab === "team") {
+        app.innerHTML = `
+          <section class="card">
+            <div class="card-head">
+              <h2 class="card-title">🏆 チーム対抗戦（平均点ランキング）</h2>
+              <span class="pill">人数差公平化</span>
+            </div>
+            ${teamRanking.map((t, idx) => `
+              <div class="team-row rank-${idx + 1}">
+                <div class="rank-badge">${idx + 1}</div>
+                <div class="team-info">
+                  <p class="team-name">${escapeHtml(t.name)}</p>
+                  <div class="team-meta">出走 ${t.entrants}名 ／ 合計 ${t.totalPt}pt</div>
+                  <div class="breakdown">レース ${t.racePt}pt ＋ デザイン賞 ${t.designPt}pt ＋ 推し ${t.oshiPt}pt</div>
+                </div>
+                <div class="team-score">
+                  <div class="score-avg">${t.avg.toFixed(2)}</div>
+                  <div class="score-unit">pt / 人</div>
+                </div>
+              </div>
+            `).join("")}
+            <button type="button" class="rule-banner-btn" onclick="openRuleModal('teampt')">
+              📐 得点計算・ルールの詳細を見る
+            </button>
+          </section>
+        `;
+        return;
+      }
+
+      if (currentTab === "individual") {
+        const filteredCars = state.cars.filter((c) => selectedTeamFilter === "ALL" || c.teamId === selectedTeamFilter);
+        const sortedCars = [...filteredCars].sort((a, b) => (carPoints[b.no] || 0) - (carPoints[a.no] || 0));
+        app.innerHTML = `
+          <section class="card">
+            <div class="card-head">
+              <h2 class="card-title">🏎️ 個人戦（マシン別ポイント）</h2>
+              <span class="pill">${sortedCars.length}台</span>
+            </div>
+            <div class="filter-bar">
+              <button type="button" class="chip ${selectedTeamFilter === "ALL" ? "active" : ""}" onclick="setTeamFilter('ALL')">全チーム</button>
+              ${state.teams.map((t) => `
+                <button type="button" class="chip ${selectedTeamFilter === t.id ? "active" : ""}" onclick="setTeamFilter('${escapeHtml(t.id)}')">${escapeHtml(t.name)}</button>
+              `).join("")}
+            </div>
+            ${sortedCars.length ? sortedCars.map((c) => {
+              const team = state.teams.find((t) => t.id === c.teamId);
+              return `
+                <div class="car-item">
+                  <div>
+                    <div class="car-no">#${escapeHtml(c.no)}</div>
+                    <div class="car-name">${escapeHtml(c.name)} <span class="car-team">（${escapeHtml(c.owner || "")}）</span></div>
+                    <div class="car-team">${escapeHtml(team ? team.name : c.teamId)}</div>
+                  </div>
+                  <div class="car-pts">${carPoints[c.no] || 0} pt</div>
+                </div>
+              `;
+            }).join("") : `<div class="empty-note">該当するマシンがありません</div>`}
+          </section>
+        `;
+        return;
+      }
+
+      if (currentTab === "awards") {
+        const findCarLabel = (no) => {
+          if (!no) return "未選出";
+          const c = state.cars.find((x) => x.no === no);
+          return c ? `#${c.no} ${c.name}` : `#${no}`;
+        };
+        app.innerHTML = `
+          <section class="card">
+            <div class="card-head">
+              <h2 class="card-title">🎨 デザイン賞・特別ボーナス</h2>
+              <span class="pill">速報</span>
+            </div>
+            <div class="award-grid">
+              <div class="award-card">
+                <span class="award-tag tag-cool">COOL賞 +5pt</span>
+                <div style="font-weight:800;font-size:15px;">${escapeHtml(findCarLabel(state.awards.coolCarNo))}</div>
+              </div>
+              <div class="award-card">
+                <span class="award-tag tag-cute">CUTE賞 +5pt</span>
+                <div style="font-weight:800;font-size:15px;">${escapeHtml(findCarLabel(state.awards.cuteCarNo))}</div>
+              </div>
+              <div class="award-card">
+                <span class="award-tag tag-oshi">推し指導者賞 +3pt</span>
+                <div style="font-weight:800;font-size:15px;">${escapeHtml(findCarLabel(state.awards.oshiCarNo))}</div>
+              </div>
+            </div>
+          </section>
+        `;
+        return;
+      }
+
+      if (currentTab === "history") {
+        app.innerHTML = `
+          <section class="card">
+            <div class="card-head">
+              <h2 class="card-title">📋 レース履歴</h2>
+              <span class="pill">${state.races.length}ヒート</span>
+            </div>
+            ${state.races.length ? [...state.races].reverse().map((r) => `
+              <div class="history-item">
+                <div class="history-top">
+                  <span>${escapeHtml(r.label || "ヒート")}</span>
+                  <span>${r.category === "championship" ? "チャンピオン戦" : "チャレンジ戦"}</span>
+                </div>
+                <div>着順: ${(r.order || []).filter(Boolean).map((no, i) => `${i + 1}位 #${no}`).join(" / ") || "未入力"}</div>
+              </div>
+            `).join("") : `<div class="empty-note">まだレース結果が登録されていません</div>`}
+          </section>
+        `;
+        return;
+      }
+
+      if (currentTab === "admin") {
+        app.innerHTML = `
+          <section class="card">
+            <div class="card-head">
+              <h2 class="card-title">⚙️ レース結果入力（1位〜4位）</h2>
+              <span class="pill">運営モード</span>
+            </div>
+            <div class="form-group">
+              <label>レース区分</label>
+              <select id="raceCategory">
+                <option value="challenge">第1レース・チャレンジ戦（4/3/2/1pt）</option>
+                <option value="championship">チャンピオン戦・最速王（6/5/4/3pt）</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>ヒート名</label>
+              <input type="text" id="raceLabel" placeholder="例: 第1ヒート" />
+            </div>
+            <div class="lane-grid form-group">
+              ${[1, 2, 3, 4].map((place) => `
+                <div>
+                  <label>${place}位 カーナンバー</label>
+                  <select id="placeCar${place}">
+                    <option value="">-- 選択なし --</option>
+                    ${state.cars.map((c) => `<option value="${escapeHtml(c.no)}">#${escapeHtml(c.no)} ${escapeHtml(c.name)}</option>`).join("")}
+                  </select>
+                </div>
+              `).join("")}
+            </div>
+            <button type="button" class="btn btn-accent" onclick="submitRaceResult()">レース結果を登録</button>
+          </section>
+
+          <section class="card">
+            <div class="card-head">
+              <h2 class="card-title">🎨 デザイン賞・推し指導者賞の設定</h2>
+            </div>
+            ${[
+              ["coolCarNo", "COOL賞（+5pt）"],
+              ["cuteCarNo", "CUTE賞（+5pt）"],
+              ["oshiCarNo", "推し指導者賞（+3pt）"]
+            ].map(([key, label]) => `
+              <div class="form-group">
+                <label>${label}</label>
+                <select id="award_${key}">
+                  <option value="">-- 未選出 --</option>
+                  ${state.cars.map((c) => `<option value="${escapeHtml(c.no)}" ${state.awards[key] === c.no ? "selected" : ""}>#${escapeHtml(c.no)} ${escapeHtml(c.name)}</option>`).join("")}
+                </select>
+              </div>
+            `).join("")}
+            <button type="button" class="btn btn-primary" onclick="saveAwardsAdmin()">デザイン賞を保存</button>
+          </section>
+        `;
+      }
+    }
+
+    function setTeamFilter(teamId) {
+      selectedTeamFilter = teamId;
+      render();
+    }
+
+    async function submitRaceResult() {
+      const category = document.getElementById("raceCategory").value;
+      const label = (document.getElementById("raceLabel").value || "").trim() || `ヒート ${state.races.length + 1}`;
+      const order = [1, 2, 3, 4].map((i) => document.getElementById(`placeCar${i}`).value).filter(Boolean);
+      if (!order.length) {
+        showToast("少なくとも1台選択してください");
+        return;
+      }
+      state.races.push({
+        id: Date.now(),
+        category,
+        label,
+        order,
+        createdAt: new Date().toISOString()
+      });
+      persistLocal();
+      await pushToFirebase();
+      render();
+      showToast("レース結果を登録しました");
+    }
+
+    async function saveAwardsAdmin() {
+      state.awards = {
+        coolCarNo: document.getElementById("award_coolCarNo").value,
+        cuteCarNo: document.getElementById("award_cuteCarNo").value,
+        oshiCarNo: document.getElementById("award_oshiCarNo").value
+      };
+      persistLocal();
+      await pushToFirebase();
+      render();
+      showToast("デザイン賞を保存しました");
+    }
+
+    updateNavActive();
+    render();
+    startSyncLoop();
+  </script>
+</body>
+</html>
