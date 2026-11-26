@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pwd-2027-shiki1-v3';
+const CACHE_NAME = 'pwd-2027-shiki1-v4';
 const ASSETS = [
   './',
   './index.html',

@@ -36,7 +36,7 @@
     .header {
       background: linear-gradient(135deg, #0f172a 0%, #1e293b 55%, #881337 100%);
       color: #fff;
-      padding: 16px 16px 20px;
+      padding: 14px 16px 18px;
       position: sticky;
       top: 0;
       z-index: 20;
@@ -56,7 +56,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       flex-wrap: wrap;
       margin-bottom: 8px;
     }
@@ -95,6 +95,25 @@
       background: #fbbf24;
       box-shadow: none;
     }
+    .header-actions {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .rule-btn {
+      background: #f59e0b;
+      color: #0f172a;
+      border: none;
+      font-size: 11px;
+      font-weight: 900;
+      padding: 5px 11px;
+      border-radius: 999px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.35);
+    }
     .hp-btn {
       background: rgba(255, 255, 255, 0.14);
       color: #fff;
@@ -107,14 +126,14 @@
     }
     .title {
       margin: 0;
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 900;
       letter-spacing: 0.02em;
       line-height: 1.3;
     }
     .sub {
       margin: 4px 0 0;
-      font-size: 12px;
+      font-size: 11px;
       color: #cbd5e1;
     }
     .container {
@@ -370,11 +389,11 @@
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.65);
+      background: rgba(15, 23, 42, 0.72);
       display: none;
       align-items: center;
       justify-content: center;
-      padding: 16px;
+      padding: 14px;
       z-index: 50;
     }
     .modal-backdrop.open { display: flex; }
@@ -382,10 +401,44 @@
       background: #fff;
       border-radius: 18px;
       width: 100%;
-      max-width: 520px;
+      max-width: 560px;
       max-height: 88vh;
       overflow-y: auto;
       padding: 18px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+    }
+    .rule-sec {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 10px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .rule-sec h4 {
+      margin: 0 0 6px;
+      font-size: 14px;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .rule-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-top: 6px;
+      background: #fff;
+    }
+    .rule-table th, .rule-table td {
+      border: 1px solid #cbd5e1;
+      padding: 6px 8px;
+      text-align: center;
+    }
+    .rule-table th {
+      background: #0f172a;
+      color: #fff;
     }
     .toast {
       position: fixed;
@@ -414,10 +467,13 @@
           <span id="syncText">ローカル動作中（Firebase設定）</span>
         </button>
       </div>
-      <a class="hp-btn" href="https://tarsier-rrzzn0.my.canva.site/shiki-1-pc-2027pwd" target="_blank" rel="noopener">大会案内HP ↗</a>
+      <div class="header-actions">
+        <button class="rule-btn" onclick="openRulesModal()">📖 大会ルール</button>
+        <a class="hp-btn" href="https://tarsier-rrzzn0.my.canva.site/shiki-1-pc-2027pwd" target="_blank" rel="noopener">特設HP ↗</a>
+      </div>
     </div>
     <h1 class="title">2027 奈良県 友団合同 パインウッドダービー</h1>
-    <p class="sub">2027年3月7日(土) 三宅町体育館 ｜ リアルタイム速報＆運営ボード</p>
+    <p class="sub">2027年3月7日(日) 三宅町体育館 ｜ リアルタイム速報＆運営ボード</p>
   </header>
   <div class="checker"></div>
 
@@ -442,11 +498,31 @@
     </button>
   </nav>
 
+  <!-- 大会ルール閲覧モーダル -->
+  <div id="rulesModal" class="modal-backdrop" onclick="if(event.target===this)closeRulesModal()">
+    <div class="modal-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <h3 style="margin:0;font-size:17px;font-weight:900;">📖 大会競技規則・進行ルール</h3>
+        <button onclick="closeRulesModal()" style="border:none;background:#f1f5f9;border-radius:999px;width:30px;height:30px;font-weight:900;cursor:pointer;">✕</button>
+      </div>
+      <div class="chip-row" id="ruleTabs">
+        <button class="chip active" onclick="switchRuleTab('spec', this)">車検・規格</button>
+        <button class="chip" onclick="switchRuleTab('flow', this)">当日の流れ</button>
+        <button class="chip" onclick="switchRuleTab('race', this)">対戦方式</button>
+        <button class="chip" onclick="switchRuleTab('design', this)">デザイン賞</button>
+        <button class="chip" onclick="switchRuleTab('team', this)">チーム戦得点</button>
+      </div>
+      <div id="ruleBody"></div>
+      <button class="btn btn-dark" onclick="closeRulesModal()">閉じる</button>
+    </div>
+  </div>
+
+  <!-- Firebase設定モーダル -->
   <div id="fbModal" class="modal-backdrop" onclick="if(event.target===this)closeFirebaseModal()">
     <div class="modal-card">
       <h3 style="margin:0 0 6px;font-size:16px;">Firebase リアルタイム共有設定</h3>
       <p style="margin:0 0 12px;font-size:12px;color:#64748b;">
-        複数端末でリアルタイム同期する場合は Firebase Realtime Database（REST URL）または設定情報を入力してください。未設定でもこの端末内で即座に動作します。
+        複数端末でリアルタイム同期する場合は Firebase Realtime Database（REST URL）を入力してください。未設定でもこの端末内で即座に動作します。
       </p>
       <label>Firebase Realtime Database URL（例: https://your-project-default-rtdb.firebaseio.com）</label>
       <input type="text" id="fbDbUrl" placeholder="https://....firebaseio.com" />
@@ -461,6 +537,91 @@
     const STORAGE_KEY = "pwd_2027_shiki1_state_v1";
     const FB_CFG_KEY = "pwd_2027_shiki1_fb_cfg_v1";
     const PASSCODE = "2027";
+
+    const RULE_SECTIONS = {
+      spec: `
+        <div class="rule-sec">
+          <h4>📏 車検サイズと重さの上限</h4>
+          <table class="rule-table">
+            <tr><th>全長（タテ）</th><th>全幅（ヨコ）</th><th>高さ</th><th>重さ上限</th></tr>
+            <tr><td><b>178 mm以下</b></td><td><b>70 mm以下</b></td><td>規定なし</td><td><b>142 g以下</b></td></tr>
+          </table>
+          <ul style="margin:8px 0 0;padding-left:18px;font-size:12px;">
+            <li><b>潤滑油・シリコン等の塗布は禁止</b>です。</li>
+            <li><b>黒鉛（グラファイトパウダー）の塗布は可</b>です。</li>
+            <li>到着順に車検・出走枠抽選を行い、合格後に展示スペースへ配置します。</li>
+          </ul>
+        </div>
+        <div class="rule-sec">
+          <h4>🚦 出走の4ステップ</h4>
+          <ol style="margin:0;padding-left:18px;font-size:12px;">
+            <li>計量置き台で待機し、自分のマシンの出走順を待ちます。</li>
+            <li>観客席前で4人横並びになり、30秒でマシンのこだわりや見どころをアピールします。</li>
+            <li>各自レーンに置いて一歩下がり、スタートの合図に合わせて発走します。</li>
+            <li>コース脇からスマートフォンで走行動画を撮影して判定し、コール後に順位シールを受け取ります。</li>
+          </ol>
+        </div>
+      `,
+      flow: `
+        <div class="rule-sec">
+          <h4>🕒 大会当日のタイムスケジュール</h4>
+          <ul style="margin:0;padding-left:18px;font-size:12px;">
+            <li><b>09:00</b> 指導者設営（車検コーナー・展示テーブル）</li>
+            <li><b>09:30</b> スカウト車検・出走枠抽選</li>
+            <li><b>10:00</b> 開会式</li>
+            <li><b>10:15</b> 第1レース（約20戦・4台一斉走行＋動画判定）</li>
+            <li><b>11:05</b> 休憩・枠組み作成</li>
+            <li><b>11:15</b> 第2レース（約25戦：チャレンジ戦・チャンピオン戦・決勝）</li>
+            <li><b>12:00</b> 昼休憩・デザイン投票・推し指導者決定（<b>12:50締切</b>）</li>
+            <li><b>12:50</b> 指導者戦 → <b>13:05</b> 最速王戦</li>
+            <li><b>13:35</b> 表彰式 → <b>14:30頃</b> 解散</li>
+          </ul>
+        </div>
+      `,
+      race: `
+        <div class="rule-sec">
+          <h4>🏁 チャンピオン戦とチャレンジ戦の流れ</h4>
+          <ul style="margin:0;padding-left:18px;font-size:12px;">
+            <li><b>第1レース：</b>抽選で組分け・レーンを決定（4台一斉走行）。<b>1位・2位はチャンピオン戦</b>、<b>3位・4位はチャレンジ戦</b>へ進出。</li>
+            <li><b>チャンピオン戦：</b>1回戦（各組4台一斉走行）の<b>1位のみ</b>が決勝戦へ進出。各部門優勝者4名で「総合チャンピオン決定戦（一発勝負）」を実施。</li>
+            <li><b>チャレンジ戦：</b>1回戦（各組4台一斉走行）の<b>1位のみ</b>が決勝戦へ進出し、チャレンジリーグ優勝者を決定。</li>
+            <li><b>指導者部門：</b>各団・隊ごとに2台＋ゲスト（計16台）で予選4戦→決勝戦を実施。</li>
+          </ul>
+        </div>
+        <div class="rule-sec">
+          <h4>🥷 刺客マシン（端数調整）ルール</h4>
+          <p style="margin:0;font-size:12px;">
+            2〜3台の端数が出たときは、出走スカウトが指導者戦に出ない指導者車のクジを引き、選ばれた指導者マシンが参戦します。刺客車も1〜4位として着順カウントし、スカウトには実際の着順通りのシール・勝ち上がりを適用します。
+          </p>
+        </div>
+      `,
+      design: `
+        <div class="rule-sec">
+          <h4>🎨 COOL賞・CUTE賞 規定</h4>
+          <ul style="margin:0;padding-left:18px;font-size:12px;">
+            <li><b>部門別表彰：</b>ビーバー・うさぎ・しか・くまのグループごとに「COOL賞」「CUTE賞」を選出・表彰します。</li>
+            <li><b>投票方法：</b>昼休み中に展示車を見て、A5投票用紙に車名ではなく<b>エントリー番号</b>を記入して投票箱へ入れます（自分の組の車にも投票可・12:50締切）。</li>
+            <li><b>重複時の扱い：</b>同一車が両賞で1位になった場合は得票の多い賞を受賞し、もう一方は2位を繰り上げます（W受賞なし・同票はジャンケン）。</li>
+          </ul>
+        </div>
+      `,
+      team: `
+        <div class="rule-sec">
+          <h4>🏆 チーム対抗戦 得点・平均点ルール</h4>
+          <table class="rule-table">
+            <tr><th>レース区分</th><th>1位</th><th>2位</th><th>3位</th><th>4位</th></tr>
+            <tr><td>第1レース</td><td>4枚 (4pt)</td><td>3枚 (3pt)</td><td>2枚 (2pt)</td><td>1枚 (1pt)</td></tr>
+            <tr><td>チャレンジ戦</td><td>4枚 (4pt)</td><td>3枚 (3pt)</td><td>2枚 (2pt)</td><td>1枚 (1pt)</td></tr>
+            <tr><td>チャンピオン戦</td><td>6枚 (6pt)</td><td>5枚 (5pt)</td><td>4枚 (4pt)</td><td>3枚 (3pt)</td></tr>
+          </table>
+          <ul style="margin:8px 0 0;padding-left:18px;font-size:12px;">
+            <li><b>デザイン賞ボーナス：</b>COOL賞・CUTE賞の受賞チームに金色ビッグシール授与（<b>1枚＝5点</b>）。</li>
+            <li><b>推し指導者ボーナス（最大+10点）：</b>昼休みにチームで指導者1名を指名（指導者1名につき2チームまで・重複時はジャンケン）。指名が被らない指導者が「<b>決勝進出＋5点</b>」「<b>決勝1位＋5点</b>」。</li>
+            <li><b>順位決定式：</b><code>チーム総得点 ÷ チーム出走人数</code> の<b>1人平均点</b>で競い、最優秀チームを表彰します。</li>
+          </ul>
+        </div>
+      `
+    };
 
     const DEFAULT_TEAMS = [
       { id: "T1", name: "磯城1団 ビーバー隊", members: 8 },
@@ -597,6 +758,22 @@
       pollTimer = setInterval(pullFromFirebase, 4000);
     }
 
+    function openRulesModal() {
+      document.getElementById("rulesModal").classList.add("open");
+      const firstChip = document.querySelector("#ruleTabs .chip");
+      switchRuleTab("spec", firstChip);
+    }
+
+    function closeRulesModal() {
+      document.getElementById("rulesModal").classList.remove("open");
+    }
+
+    function switchRuleTab(key, el) {
+      document.querySelectorAll("#ruleTabs .chip").forEach(c => c.classList.remove("active"));
+      if (el) el.classList.add("active");
+      document.getElementById("ruleBody").innerHTML = RULE_SECTIONS[key] || "";
+    }
+
     function openFirebaseModal() {
       const cfg = getFbConfig();
       document.getElementById("fbDbUrl").value = cfg.dbUrl || "";
@@ -729,6 +906,9 @@
                 1位:6pt / 2位:5pt / 3位:4pt / 4位:3pt
               </div>
             </div>
+            <button class="btn btn-outline" style="margin-top:0;margin-bottom:12px;padding:9px 12px;font-size:12px;" onclick="openRulesModal()">
+              📖 車検規格・当日の流れ・得点ルールを見る
+            </button>
             ${rankedTeams.map((t, idx) => {
               const pct = Math.min(100, Math.round((t.avgPts / maxAvg) * 100));
               return `
@@ -1034,8 +1214,7 @@
     function importCsv() {
       const raw = document.getElementById("csvInput").value.trim();
       if (!raw) return;
-      const lines = raw.split(/?
-/);
+      const lines = raw.split(/\r?\n/);
       let added = 0;
       lines.forEach(line => {
         const cols = line.split(",").map(s => s.trim());
