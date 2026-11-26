@@ -1,0 +1,11 @@
+{
+  "name": "2027 パインウッドダービー 速報ボード",
+  "short_name": "PWD2027速報",
+  "description": "2027 奈良県 友団合同 パインウッドダービー リアルタイム速報＆運営ボード",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f1f5f9",
+  "theme_color": "#1e1b4b",
+  "lang": "ja"
+}
