@@ -1428,7 +1428,8 @@
 
     async function importCsv() {
       const raw = document.getElementById("csvInput").value || "";
-      const lines = raw.split(/?
+      const lines = raw.split(/
+?
 /).map((l) => l.trim()).filter(Boolean);
       const parsedCars = [];
       for (const line of lines) {
