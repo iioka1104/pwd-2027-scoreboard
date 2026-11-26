@@ -1,0 +1,25 @@
+{
+  "name": "2027 奈良県 友団合同 パインウッドダービー",
+  "short_name": "PWD 2027",
+  "description": "2027年3月7日 三宅町体育館 友団合同パインウッドダービー リアルタイム速報＆運営アプリ",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='40' fill='%230f172a'/%3E%3Cpath d='M36 122 L144 74 L160 96 L44 138 Z' fill='%23ef4444'/%3E%3Ccircle cx='62' cy='136' r='16' fill='%23f59e0b' stroke='%23ffffff' stroke-width='4'/%3E%3Ccircle cx='136' cy='112' r='16' fill='%23f59e0b' stroke='%23ffffff' stroke-width='4'/%3E%3Ctext x='96' y='52' text-anchor='middle' fill='%23ffffff' font-size='26' font-weight='bold' font-family='sans-serif'%3EPWD 2027%3C/text%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='104' fill='%230f172a'/%3E%3Cpath d='M96 326 L384 198 L426 256 L118 368 Z' fill='%23ef4444'/%3E%3Ccircle cx='166' cy='362' r='42' fill='%23f59e0b' stroke='%23ffffff' stroke-width='10'/%3E%3Ccircle cx='362' cy='298' r='42' fill='%23f59e0b' stroke='%23ffffff' stroke-width='10'/%3E%3Ctext x='256' y='138' text-anchor='middle' fill='%23ffffff' font-size='68' font-weight='bold' font-family='sans-serif'%3EPWD 2027%3C/text%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
