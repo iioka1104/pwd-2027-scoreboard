@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#1e1b4b" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>2027 奈良県 友団合同 パインウッドダービー | リアルタイム速報＆運営ボード</title>
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    :root {
+      --bg: #f1f5f9;
+      --surface: #ffffff;
+      --surface-alt: #f8fafc;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --primary: #4f46e5;
+      --primary-dark: #3730a3;
+      --accent: #e11d48;
+      --gold: #d97706;
+      --silver: #64748b;
+      --bronze: #b45309;
+      --ok: #059669;
+      --warn: #d97706;
+      --radius: 16px;
+      --shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Meiryo", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      padding-bottom: 84px;
+      line-height: 1.5;
+    }
+
+    .topbar {
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 55%, #881337 100%);
+      color: #fff;
+      padding: 16px 18px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      box-shadow: 0 4px 18px rgba(15, 23, 42, 0.18);
+    }
+
+    .topbar-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .sync-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      cursor: pointer;
+    }
+
+    .sync-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #fbbf24;
+    }
+
+    .sync-badge.live .sync-dot {
+      background: #34d399;
+      box-shadow: 0 0 8px #34d399;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .rule-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #1e1b4b;
+      background: #fde68a;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .hp-link {
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+    }
+
+    .title-main {
+      font-size: 18px;
+      font-weight: 800;
+      margin: 0;
+      letter-spacing: 0.02em;
+    }
+
+    .title-sub {
+      font-size: 12px;
+      opacity: 0.88;
+      margin: 3px 0 0;
+    }
+
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 14px 14px 24px;
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--line);
+    }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 800;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: var(--primary-dark);
+    }
+
+    .rule-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .rule-box {
+      background: var(--surface-alt);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 12px;
+    }
+
+    .rule-box strong {
+      display: block;
+      font-size: 12px;
+      color: var(--primary-dark);
+      margin-bottom: 3px;
+    }
+
+    .rule-banner-btn {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid #c7d2fe;
+      background: #eef2ff;
+      color: #1e1b4b;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .team-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px;
+      border-radius: 14px;
+      background: var(--surface-alt);
+      border: 1px solid var(--line);
+      margin-bottom: 10px;
+    }
+
+    .team-row.rank-1 {
+      background: linear-gradient(90deg, #fffbeb 0%, #fef3c7 100%);
+      border-color: #f59e0b;
+    }
+
+    .rank-badge {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 14px;
+      background: #e2e8f0;
+      color: #334155;
+      flex-shrink: 0;
+    }
+
+    .rank-1 .rank-badge { background: #f59e0b; color: #fff; }
+    .rank-2 .rank-badge { background: #94a3b8; color: #fff; }
+    .rank-3 .rank-badge { background: #b45309; color: #fff; }
+
+    .team-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .team-name {
+      font-size: 14px;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .team-meta {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .team-score {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .score-avg {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--accent);
+    }
+
+    .score-unit {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .breakdown {
+      font-size: 11px;
+      color: #475569;
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 1px dashed #cbd5e1;
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      margin-bottom: 10px;
+    }
+
+    .chip {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .chip.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .car-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--surface-alt);
+      margin-bottom: 8px;
+    }
+
+    .car-no {
+      font-weight: 900;
+      font-size: 13px;
+      color: var(--primary-dark);
+      min-width: 44px;
+    }
+
+    .car-name {
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .car-team {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .car-pts {
+      font-weight: 900;
+      font-size: 15px;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    .award-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+    }
+
+    .award-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      background: var(--surface-alt);
+    }
+
+    .award-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 999px;
+      margin-bottom: 6px;
+    }
+
+    .tag-cool { background: #dbeafe; color: #1d4ed8; }
+    .tag-cute { background: #fce7f3; color: #be185d; }
+    .tag-oshi { background: #fef3c7; color: #b45309; }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: #334155;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      font-size: 14px;
+      background: #fff;
+      color: var(--ink);
+      font-family: inherit;
+    }
+
+    .lane-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 11px 14px;
+      border-radius: 12px;
+      border: none;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-accent { background: var(--accent); color: #fff; }
+    .btn-outline { background: #fff; color: var(--ink); border: 1px solid #cbd5e1; }
+    .btn-sm { padding: 7px 10px; font-size: 12px; width: auto; }
+
+    .history-item {
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface-alt);
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+
+    .history-top {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border-top: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      z-index: 40;
+      box-shadow: 0 -4px 16px rgba(15, 23, 42, 0.06);
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      padding: 8px 4px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .nav-btn.active {
+      color: var(--primary);
+    }
+
+    .nav-icon {
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 60;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal {
+      background: #fff;
+      border-radius: 18px;
+      max-width: 560px;
+      width: 100%;
+      max-height: 88vh;
+      overflow-y: auto;
+      padding: 18px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+    }
+
+    .rule-tabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .rule-tab-btn {
+      border: 1px solid var(--line);
+      background: var(--surface-alt);
+      color: var(--ink);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .rule-tab-btn.active {
+      background: #1e1b4b;
+      color: #fde68a;
+      border-color: #1e1b4b;
+    }
+
+    .rule-modal-section {
+      background: var(--surface-alt);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 10px;
+      font-size: 12px;
+    }
+
+    .rule-modal-section h4 {
+      margin: 0 0 6px;
+      font-size: 13px;
+      color: var(--primary-dark);
+    }
+
+    .rule-modal-section ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .rule-modal-section li {
+      margin-bottom: 4px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 76px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0f172a;
+      color: #fff;
+      padding: 9px 16px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      z-index: 70;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+
+    .empty-note {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 18px 8px;
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-top">
+      <div id="syncBadge" class="sync-badge" onclick="openSyncModal()">
+        <span class="sync-dot"></span>
+        <span id="syncText">ローカル動作中（Firebase設定）</span>
+      </div>
+      <div class="header-actions">
+        <button type="button" class="rule-btn" onclick="openRuleModal('spec')">📖 大会ルール</button>
+        <a class="hp-link" href="https://iioka1104.github.io/pwd-2027-hp/" target="_blank" rel="noopener">特設HP ↗</a>
+      </div>
+    </div>
+    <h1 class="title-main">2027 奈良県 友団合同 パインウッドダービー</h1>
+    <p class="title-sub">2027年3月7日(日) 三宅町体育館 ｜ リアルタイム速報＆運営ボード</p>
+  </header>
+
+  <main class="container" id="app"></main>
+
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-tab="team" onclick="switchTab('team')">
+      <span class="nav-icon">🏆</span>
+      <span>チーム戦</span>
+    </button>
+    <button class="nav-btn" data-tab="individual" onclick="switchTab('individual')">
+      <span class="nav-icon">🏎️</span>
+      <span>個人戦</span>
+    </button>
+    <button class="nav-btn" data-tab="awards" onclick="switchTab('awards')">
+      <span class="nav-icon">🎨</span>
+      <span>デザイン賞</span>
+    </button>
+    <button class="nav-btn" data-tab="history" onclick="switchTab('history')">
+      <span class="nav-icon">📋</span>
+      <span>レース履歴</span>
+    </button>
+    <button class="nav-btn" data-tab="admin" onclick="switchTab('admin')">
+      <span class="nav-icon">⚙️</span>
+      <span>運営入力</span>
+    </button>
+  </nav>
+
+  <!-- Firebase同期設定モーダル -->
+  <div id="syncModal" class="modal-backdrop">
+    <div class="modal">
+      <h3 style="margin-top:0;">Firebase リアルタイム共有設定</h3>
+      <p style="font-size:12px;color:var(--muted);">
+        複数端末でリアルタイム同期する場合は Firebase Realtime Database（REST URL）を入力してください。未設定でもこの端末内で即座に動作します。
+      </p>
+      <div class="form-group">
+        <label>Firebase Realtime Database URL（例: https://your-project-default-rtdb.firebaseio.com）</label>
+        <input type="url" id="fbUrlInput" placeholder="https://....firebaseio.com" />
+      </div>
+      <div class="form-group">
+        <label>大会ルームID</label>
+        <input type="text" id="fbRoomInput" placeholder="pwd-2027-nara" />
+      </div>
+      <div style="display:flex;gap:8px;flex-direction:column;">
+        <button class="btn btn-accent" onclick="saveSyncConfig()">保存して同期を開始</button>
+        <button class="btn btn-outline" onclick="closeModal('syncModal')">閉じる</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 大会ルールモーダル -->
+  <div id="ruleModal" class="modal-backdrop">
+    <div class="modal">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;">
+        <h3 style="margin:0;">📖 2027 パインウッドダービー 大会ルール</h3>
+        <button type="button" class="btn btn-outline btn-sm" onclick="closeModal('ruleModal')">閉じる</button>
+      </div>
+      <div class="rule-tabs" id="ruleTabs">
+        <button type="button" class="rule-tab-btn active" data-rkey="spec" onclick="switchRuleTab('spec')">車検・規格</button>
+        <button type="button" class="rule-tab-btn" data-rkey="schedule" onclick="switchRuleTab('schedule')">当日の流れ</button>
+        <button type="button" class="rule-tab-btn" data-rkey="format" onclick="switchRuleTab('format')">対戦方式</button>
+        <button type="button" class="rule-tab-btn" data-rkey="design" onclick="switchRuleTab('design')">デザイン賞</button>
+        <button type="button" class="rule-tab-btn" data-rkey="teampt" onclick="switchRuleTab('teampt')">チーム戦得点</button>
+      </div>
+      <div id="ruleModalBody"></div>
+    </div>
+  </div>
+
+  <!-- 運営パスコードモーダル -->
+  <div id="passModal" class="modal-backdrop">
+    <div class="modal">
+      <h3 style="margin-top:0;">運営モード認証</h3>
+      <p style="font-size:12px;color:var(--muted);">
+        レース結果入力・出走人数・デザイン賞・名簿インポートを行うには運営パスコードを入力してください（初期値: <code>2027</code>）。
+      </p>
+      <div class="form-group">
+        <label>パスコード</label>
+        <input type="password" id="passInput" inputmode="numeric" placeholder="2027" />
+      </div>
+      <div style="display:flex;gap:8px;flex-direction:column;">
+        <button class="btn btn-primary" onclick="verifyPasscode()">ロック解除</button>
+        <button class="btn btn-outline" onclick="closeModal('passModal')">キャンセル</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const PASSCODE = "2027";
+    const STORAGE_KEY = "pwd2027_scoreboard_state_v1";
+
+    // ★ ここを書き換えると、URLを開いた全端末で最初からリアルタイム同期されます
+    const DEFAULT_FB_URL = "https://pwd-2027-nara-default-rtdb.firebaseio.com";
+    const DEFAULT_FB_ROOM = "pwd-2027-nara";
+
+    const DEFAULT_TEAMS = [
+      { id: "beaver", name: "磯城1団 ビーバー隊", entrants: 8 },
+      { id: "cub1", name: "磯城1団 カブ1組", entrants: 7 },
+      { id: "cub2", name: "磯城1団 カブ2組", entrants: 7 },
+      { id: "boy", name: "磯城1団 ボーイ隊", entrants: 8 },
+      { id: "guestA", name: "友団 チームA", entrants: 8 },
+      { id: "guestB", name: "友団 チームB", entrants: 8 }
+    ];
+
+    const DEFAULT_CARS = [
+      { no: "101", name: "奈良の鹿号", teamId: "beaver", owner: "スカウトA" },
+      { no: "102", name: "飛鳥レッド", teamId: "beaver", owner: "スカウトB" },
+      { no: "201", name: "三輪山ソニック", teamId: "cub1", owner: "スカウトC" },
+      { no: "202", name: "大和路アロー", teamId: "cub1", owner: "スカウトD" },
+      { no: "301", name: "橿原フラッシュ", teamId: "cub2", owner: "スカウトE" },
+      { no: "302", name: "明日香ウィンド", teamId: "cub2", owner: "スカウトF" },
+      { no: "401", name: "磯城イーグル", teamId: "boy", owner: "スカウトG" },
+      { no: "402", name: "若草ストーム", teamId: "boy", owner: "スカウトH" },
+      { no: "501", name: "友団コメット", teamId: "guestA", owner: "参加スカウト1" },
+      { no: "601", name: "友団サンダー", teamId: "guestB", owner: "参加スカウト2" }
+    ];
+
+    const RULE_SECTIONS = {
+      spec: {
+        title: "車検・車両規格（全クラス共通）",
+        blocks: [
+          {
+            heading: "寸法・重量の上限",
+            items: [
+              "<strong>全長：</strong>178 mm以下（スタートゲート〜ゴール判定に適合すること）",
+              "<strong>全幅：</strong>70 mm以下（4レーン幅に収まること）",
+              "<strong>重量：</strong>142 g以下（車検計量器にて測定・超過は減量調整後に再車検）"
+            ]
+          },
+          {
+            heading: "車体・車輪・走行の禁止事項",
+            items: [
+              "<strong>キット基本構造：</strong>支給ブロック・車軸溝・車輪を基本とし、過度な改造や接着剤のはみ出しによる車輪接触は不可",
+              "<strong>動力・潤滑：</strong>バネ・ゴム・モーター・磁石・圧縮ガスなどの動力は禁止。潤滑剤は乾式（グラファイト等）のみとし、コースを汚す液状油は禁止",
+              "<strong>車検合格シール：</strong>受付・車検を通過した車両のみ出走可能（当日朝の車検時間内に受検すること）"
+            ]
+          }
+        ]
+      },
+      schedule: {
+        title: "当日の流れ（2027年3月7日・三宅町体育館）",
+        blocks: [
+          {
+            heading: "午前の部（受付・車検・第1レース）",
+            items: [
+              "<strong>開場・受付・車検：</strong>車両寸法・重量チェックおよび出走確認",
+              "<strong>開会式・コース説明：</strong>レーン運用・スタート合図・安全ルールの確認",
+              "<strong>第1レース（チャレンジ戦）：</strong>4レーン対戦による予選／チャレンジ走行（1位:4pt / 2位:3pt / 3位:2pt / 4位:1pt）"
+            ]
+          },
+          {
+            heading: "午後の部（チャンピオン戦・デザイン賞・表彰）",
+            items: [
+              "<strong>第2レース（チャンピオン戦／最速王決定戦）：</strong>上位・選抜ヒートによる高配点レース（1位:6pt / 2位:5pt / 3位:4pt / 4位:3pt）",
+              "<strong>デザイン賞投票・審査：</strong>COOL賞・CUTE賞・推し指導者ボーナスの選出と反映",
+              "<strong>結果集計・表彰式：</strong>個人表彰およびチーム対抗戦（平均点ランキング）の表彰"
+            ]
+          }
+        ]
+      },
+      format: {
+        title: "対戦方式・レーン運用・再走ルール",
+        blocks: [
+          {
+            heading: "4レーン対戦と着順記録",
+            items: [
+              "1ヒート最大4台同時走行とし、ゴール通過順（1着〜4着）を記録して速報ボードへ反映します",
+              "レーンごとの微妙な個体差を平準化するため、複数ヒートまたはレーン入替を基本とします"
+            ]
+          },
+          {
+            heading: "コースアウト・接触・再走基準",
+            items: [
+              "コース外逸脱や明らかなスタート機材トラブル・他車との重大な干渉があった場合は、審判判断で再走（リラン）を行います",
+              "自車の部品脱落や規格逸脱が判明した場合は、安全確認のうえ整備・再車検の対象となります"
+            ]
+          }
+        ]
+      },
+      design: {
+        title: "デザイン賞・推し指導者ボーナス",
+        blocks: [
+          {
+            heading: "特別賞・ボーナスの仕組み",
+            items: [
+              "<strong>COOL賞：</strong>かっこいい造形・カラーリング・ギミック等に贈られるデザイン賞（+5pt）",
+              "<strong>CUTE賞：</strong>かわいい工夫・親しみやすいアイデア等に贈られるデザイン賞（+5pt）",
+              "<strong>推し指導者ボーナス：</strong>指導者推薦・注目車両へのボーナスポイント（+3pt）"
+            ]
+          }
+        ]
+      },
+      teampt: {
+        title: "チーム戦得点計算（人数差公平化）",
+        blocks: [
+          {
+            heading: "平均点ランキングの計算式",
+            items: [
+              "<strong>計算式：</strong>（所属マシンのレース得点合計 ＋ デザイン賞 ＋ 推し指導者ボーナス）÷ 当日出走人数",
+              "<strong>第1レース／チャレンジ戦：</strong>1位 4pt ／ 2位 3pt ／ 3位 2pt ／ 4位 1pt",
+              "<strong>チャンピオン戦／最速王決定戦：</strong>1位 6pt ／ 2位 5pt ／ 3位 4pt ／ 4位 3pt",
+              "参加人数の違いによる有利・不利をなくすため、チーム合計点を「当日出走人数」で割った平均点で順位を決定します"
+            ]
+          }
+        ]
+      }
+    };
+
+    let state = loadInitialState();
+    let currentTab = "team";
+    let currentRuleTab = "spec";
+    let selectedTeamFilter = "ALL";
+    let adminUnlocked = false;
+    let pendingAdminAction = null;
+    let pollTimer = null;
+
+    function loadInitialState() {
+      const savedUrl = localStorage.getItem("pwd2027_fb_url");
+      const savedRoom = localStorage.getItem("pwd2027_fb_room");
+      const base = {
+        teams: JSON.parse(JSON.stringify(DEFAULT_TEAMS)),
+        cars: JSON.parse(JSON.stringify(DEFAULT_CARS)),
+        races: [],
+        awards: {
+          coolCarNo: "",
+          cuteCarNo: "",
+          oshiCarNo: ""
+        },
+        fbUrl: savedUrl !== null ? savedUrl : DEFAULT_FB_URL,
+        fbRoom: savedRoom !== null ? savedRoom : DEFAULT_FB_ROOM,
+        updatedAt: Date.now()
+      };
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return base;
+        const parsed = JSON.parse(raw);
+        return {
+          ...base,
+          ...parsed,
+          teams: Array.isArray(parsed.teams) && parsed.teams.length ? parsed.teams : base.teams,
+          cars: Array.isArray(parsed.cars) && parsed.cars.length ? parsed.cars : base.cars,
+          races: Array.isArray(parsed.races) ? parsed.races : [],
+          awards: { ...base.awards, ...(parsed.awards || {}) },
+          fbUrl: parsed.fbUrl !== undefined ? parsed.fbUrl : base.fbUrl,
+          fbRoom: parsed.fbRoom !== undefined ? parsed.fbRoom : base.fbRoom
+        };
+      } catch (e) {
+        return base;
+      }
+    }
+
+    function persistLocal() {
+      state.updatedAt = Date.now();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      if (state.fbUrl) localStorage.setItem("pwd2027_fb_url", state.fbUrl);
+      if (state.fbRoom) localStorage.setItem("pwd2027_fb_room", state.fbRoom);
+    }
+
+    async function pushToFirebase() {
+      if (!state.fbUrl) return;
+      const cleanUrl = state.fbUrl.replace(/\/+$/, "");
+      const room = (state.fbRoom || "pwd-2027-nara").trim();
+      const endpoint = `${cleanUrl}/rooms/${encodeURIComponent(room)}.json`;
+      const payload = {
+        teams: state.teams,
+        cars: state.cars,
+        races: state.races,
+        awards: state.awards,
+        updatedAt: state.updatedAt
+      };
+      try {
+        const res = await fetch(endpoint, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          setSyncStatus(true, `リアルタイム同期中 (${room})`);
+        } else {
+          setSyncStatus(false, "同期エラー（ルール確認）");
+        }
+      } catch (err) {
+        setSyncStatus(false, "オフライン／通信待機中");
+      }
+    }
+
+    async function pullFromFirebase() {
+      if (!state.fbUrl) {
+        setSyncStatus(false, "ローカル動作中（Firebase設定）");
+        return;
+      }
+      const cleanUrl = state.fbUrl.replace(/\/+$/, "");
+      const room = (state.fbRoom || "pwd-2027-nara").trim();
+      const endpoint = `${cleanUrl}/rooms/${encodeURIComponent(room)}.json`;
+      try {
+        const res = await fetch(endpoint, { cache: "no-store" });
+        if (!res.ok) {
+          setSyncStatus(false, "同期エラー（URL/ルール確認）");
+          return;
+        }
+        const remote = await res.json();
+        setSyncStatus(true, `リアルタイム同期中 (${room})`);
+        if (remote && typeof remote === "object") {
+          const remoteTs = Number(remote.updatedAt || 0);
+          const localTs = Number(state.updatedAt || 0);
+          if (remoteTs > localTs) {
+            state.teams = Array.isArray(remote.teams) && remote.teams.length ? remote.teams : state.teams;
+            state.cars = Array.isArray(remote.cars) && remote.cars.length ? remote.cars : state.cars;
+            state.races = Array.isArray(remote.races) ? remote.races : [];
+            state.awards = { ...state.awards, ...(remote.awards || {}) };
+            state.updatedAt = remoteTs;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            render();
+          } else if (localTs > remoteTs && (state.races.length > 0 || remote === null)) {
+            await pushToFirebase();
+          }
+        }
+      } catch (err) {
+        setSyncStatus(false, "ローカル／再接続待機中");
+      }
+    }
+
+    function setSyncStatus(isLive, label) {
+      const badge = document.getElementById("syncBadge");
+      const text = document.getElementById("syncText");
+      if (!badge || !text) return;
+      badge.classList.toggle("live", Boolean(isLive));
+      text.textContent = label;
+    }
+
+    function startSyncLoop() {
+      if (pollTimer) clearInterval(pollTimer);
+      pullFromFirebase();
+      pollTimer = setInterval(pullFromFirebase, 4000);
+    }
+
+    function openSyncModal() {
+      document.getElementById("fbUrlInput").value = state.fbUrl || "";
+      document.getElementById("fbRoomInput").value = state.fbRoom || "pwd-2027-nara";
+      document.getElementById("syncModal").classList.add("open");
+    }
+
+    function openRuleModal(tabKey = "spec") {
+      currentRuleTab = tabKey;
+      document.getElementById("ruleModal").classList.add("open");
+      renderRuleModal();
+    }
+
+    function switchRuleTab(tabKey) {
+      currentRuleTab = tabKey;
+      renderRuleModal();
+    }
+
+    function renderRuleModal() {
+      document.querySelectorAll(".rule-tab-btn").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.rkey === currentRuleTab);
+      });
+      const sec = RULE_SECTIONS[currentRuleTab] || RULE_SECTIONS.spec;
+      const body = document.getElementById("ruleModalBody");
+      body.innerHTML = sec.blocks.map((b) => `
+        <div class="rule-modal-section">
+          <h4>${escapeHtml(b.heading)}</h4>
+          <ul>${b.items.map((li) => `<li>${li}</li>`).join("")}</ul>
+        </div>
+      `).join("");
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove("open");
+    }
+
+    async function saveSyncConfig() {
+      const urlVal = document.getElementById("fbUrlInput").value.trim();
+      const roomVal = (document.getElementById("fbRoomInput").value.trim() || "pwd-2027-nara");
+      state.fbUrl = urlVal;
+      state.fbRoom = roomVal;
+      persistLocal();
+      closeModal("syncModal");
+      if (urlVal) {
+        await pushToFirebase();
+        await pullFromFirebase();
+        startSyncLoop();
+        showToast("Firebase同期設定を保存しました");
+      } else {
+        if (pollTimer) clearInterval(pollTimer);
+        setSyncStatus(false, "ローカル動作中（Firebase設定）");
+        showToast("ローカルモードで保存しました");
+      }
+    }
+
+    function getPointsByCategory(category, placeIndex) {
+      const table = category === "championship" ? [6, 5, 4, 3] : [4, 3, 2, 1];
+      return table[placeIndex] || 0;
+    }
+
+    function computeScores() {
+      const carPoints = {};
+      const teamRacePoints = {};
+      const teamDesignPoints = {};
+      const teamOshiPoints = {};
+
+      state.cars.forEach((c) => {
+        carPoints[c.no] = 0;
+      });
+      state.teams.forEach((t) => {
+        teamRacePoints[t.id] = 0;
+        teamDesignPoints[t.id] = 0;
+        teamOshiPoints[t.id] = 0;
+      });
+
+      state.races.forEach((race) => {
+        const order = Array.isArray(race.order) ? race.order : [];
+        order.forEach((carNo, idx) => {
+          if (!carNo) return;
+          const pts = getPointsByCategory(race.category, idx);
+          carPoints[carNo] = (carPoints[carNo] || 0) + pts;
+          const car = state.cars.find((c) => c.no === carNo);
+          if (car && teamRacePoints[car.teamId] !== undefined) {
+            teamRacePoints[car.teamId] += pts;
+          }
+        });
+      });
+
+      if (state.awards.coolCarNo) {
+        carPoints[state.awards.coolCarNo] = (carPoints[state.awards.coolCarNo] || 0) + 5;
+        const c = state.cars.find((x) => x.no === state.awards.coolCarNo);
+        if (c && teamDesignPoints[c.teamId] !== undefined) teamDesignPoints[c.teamId] += 5;
+      }
+      if (state.awards.cuteCarNo) {
+        carPoints[state.awards.cuteCarNo] = (carPoints[state.awards.cuteCarNo] || 0) + 5;
+        const c = state.cars.find((x) => x.no === state.awards.cuteCarNo);
+        if (c && teamDesignPoints[c.teamId] !== undefined) teamDesignPoints[c.teamId] += 5;
+      }
+      if (state.awards.oshiCarNo) {
+        carPoints[state.awards.oshiCarNo] = (carPoints[state.awards.oshiCarNo] || 0) + 3;
+        const c = state.cars.find((x) => x.no === state.awards.oshiCarNo);
+        if (c && teamOshiPoints[c.teamId] !== undefined) teamOshiPoints[c.teamId] += 3;
+      }
+
+      const teamRanking = state.teams.map((t) => {
+        const racePt = teamRacePoints[t.id] || 0;
+        const designPt = teamDesignPoints[t.id] || 0;
+        const oshiPt = teamOshiPoints[t.id] || 0;
+        const totalPt = racePt + designPt + oshiPt;
+        const entrants = Math.max(1, Number(t.entrants) || 1);
+        const avg = totalPt / entrants;
+        return {
+          ...t,
+          entrants,
+          racePt,
+          designPt,
+          oshiPt,
+          totalPt,
+          avg
+        };
+      }).sort((a, b) => b.avg - a.avg || b.totalPt - a.totalPt);
+
+      return { carPoints, teamRanking };
+    }
+
+    function switchTab(tab) {
+      if (tab === "admin" && !adminUnlocked) {
+        pendingAdminAction = () => {
+          currentTab = "admin";
+          updateNavActive();
+          render();
+        };
+        document.getElementById("passInput").value = "";
+        document.getElementById("passModal").classList.add("open");
+        return;
+      }
+      currentTab = tab;
+      updateNavActive();
+      render();
+    }
+
+    function updateNavActive() {
+      document.querySelectorAll(".nav-btn").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.tab === currentTab);
+      });
+    }
+
+    function verifyPasscode() {
+      const val = document.getElementById("passInput").value.trim();
+      if (val === PASSCODE) {
+        adminUnlocked = true;
+        closeModal("passModal");
+        showToast("運営モードを解除しました");
+        if (pendingAdminAction) {
+          const fn = pendingAdminAction;
+          pendingAdminAction = null;
+          fn();
