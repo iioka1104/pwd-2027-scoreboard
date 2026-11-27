@@ -449,7 +449,8 @@
 
     function parseCSV(text) {
       const clean = text.replace(/^﻿/, "").trim();
-      const lines = clean.split(/?
+      const lines = clean.split(/
+?
 /).filter(Boolean);
       if (lines.length <= 1) return [];
       return lines.slice(1).map((line) => {
