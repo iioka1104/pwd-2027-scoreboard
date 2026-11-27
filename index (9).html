@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>レース結果入力（部門別自動絞り込み対応・CSV読込）</title>
+  <style>
+    :root {
+      --bg: #f6f4fa;
+      --card: #ffffff;
+      --border: #dfd8ee;
+      --text: #221d2e;
+      --muted: #685f7c;
+      --accent: #7c4dff;
+      --accent-soft: #f0eaff;
+      --ok: #1e7e5a;
+      --ok-bg: #e7f6f0;
+      --warn: #9a5b00;
+      --warn-bg: #fff4e2;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 10px rgba(45, 25, 95, 0.04);
+    }
+    h1 {
+      font-size: 1.15rem;
+      margin: 0 0 10px;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    select, input[type="text"], input[type="number"], button {
+      width: 100%;
+      padding: 9px 11px;
+      border: 1px solid #cfc5e6;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      background: #fff;
+      color: var(--text);
+    }
+    button {
+      cursor: pointer;
+      font-weight: 600;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+    }
+    button.secondary {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid #d5c7ff;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+    .status-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .hint {
+      font-size: 0.82rem;
+      color: var(--muted);
+      background: #faf8ff;
+      border-left: 3px solid var(--accent);
+      padding: 8px 12px;
+      border-radius: 6px;
+    }
+    .warn-box {
+      display: none;
+      margin-top: 10px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: var(--warn-bg);
+      color: var(--warn);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .csv-drop {
+      border: 2px dashed #c8bce6;
+      border-radius: 10px;
+      padding: 12px 14px;
+      background: #fcfbfe;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+    .csv-drop input[type="file"] {
+      max-width: 320px;
+    }
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin-top: 10px;
+    }
+    .summary-table th, .summary-table td {
+      border-bottom: 1px solid var(--border);
+      padding: 8px 10px;
+      text-align: left;
+    }
+    .summary-table th {
+      background: #faf8ff;
+      color: var(--muted);
+    }
+    .pill-dept {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      background: var(--ok-bg);
+      color: var(--ok);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- CSV読み込みセクション -->
+    <div class="card">
+      <div class="status-bar">
+        <h1>マシン一覧CSVの読み込み</h1>
+        <span id="deptBadge" class="badge">対象部門：未選択</span>
+      </div>
+      <div class="csv-drop">
+        <input type="file" id="csvFileInput" accept=".csv,text/csv" />
+        <button type="button" class="secondary" id="loadSampleBtn" style="width:auto;">
+          サンプルCSVを反映（ビーバー／うさぎ／しか）
+        </button>
+        <span id="csvStatus" style="font-size:0.85rem; color:var(--muted);">
+          CSVを読み込むと、選択したレースの部門に合わせてプルダウンが自動絞り込みされます。
+        </span>
+      </div>
+      <div class="hint" style="margin-top:10px;">
+        対応CSV列の例：<code>部門</code>（または <code>department</code> / <code>隊</code> / <code>クラス</code>）、<code>ゼッケン</code>（または <code>番号</code> / <code>number</code>）、<code>氏名</code>（または <code>名前</code> / <code>owner</code>）、<code>車名</code>（または <code>マシン名</code> / <code>car</code>）。<br />
+        <code>部門</code>列が空でも、ゼッケンや名前の先頭が「ビーバー」「うさぎ」「しか」なら自動判別します。
+      </div>
+    </div>
+
+    <!-- レース選択＆順位入力セクション -->
+    <div class="card">
+      <div class="row">
+        <div>
+          <label for="raceSelect">レース種別・ポイント配分</label>
+          <select id="raceSelect">
+            <option value="ビーバー 第1レース（4/3/2/1pt）|ビーバー">ビーバー 第1レース（4/3/2/1pt）</option>
+            <option value="うさぎ 第1レース（4/3/2/1pt）|うさぎ">うさぎ 第1レース（4/3/2/1pt）</option>
+            <option value="しか 第1レース（4/3/2/1pt）|しか">しか 第1レース（4/3/2/1pt）</option>
+            <option value="合同オープン戦（全クラス）|ALL">合同オープン戦（全クラス）</option>
+          </select>
+        </div>
+        <div>
+          <label for="heatSelect">チャレンジ戦・ヒート区分</label>
+          <select id="heatSelect">
+            <option value="第1レース・チャレンジ戦（1位:4pt / 2位:3pt / 3位:2pt / 4位:1pt）">
+              第1レース・チャレンジ戦（1位:4pt / 2位:3pt / 3位:2pt / 4位:1pt）
+            </option>
+            <option value="第1レース・決勝ヒート">第1レース・決勝ヒート</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="customNote">カスタム名・補足</label>
+          <input type="text" id="customNote" placeholder="例：決勝ヒート" />
+        </div>
+        <div>
+          <label for="selectedRaceName">選択中のレース名</label>
+          <input type="text" id="selectedRaceName" readonly />
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="rank1">1位</label>
+          <select id="rank1" class="rank-select"></select>
+        </div>
+        <div>
+          <label for="rank2">2位</label>
+          <select id="rank2" class="rank-select"></select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="rank3">3位</label>
+          <select id="rank3" class="rank-select"></select>
+        </div>
+        <div>
+          <label for="rank4">4位</label>
+          <select id="rank4" class="rank-select"></select>
+        </div>
+      </div>
+
+      <div class="status-bar" style="margin-top:8px;">
+        <div class="hint" style="flex:1; margin:0;">
+          <strong>部門別マシン自動絞り込み・同率順位対応：</strong>
+          選択中のレース部門（例：ビーバー）に所属するマシンだけが表示されます。同じ順位を選ぶと同率順位として扱えます。
+        </div>
+        <div style="min-width:180px;">
+          <label for="bonusPt">1位ボーナスpt</label>
+          <input type="number" id="bonusPt" value="5" min="0" max="50" />
+        </div>
+      </div>
+
+      <div id="warnBox" class="warn-box"></div>
+
+      <div class="row" style="margin-top:14px; margin-bottom:0;">
+        <button type="button" id="registerBtn">結果を登録する</button>
+        <button type="button" class="secondary" id="clearRanksBtn">順位選択をクリア</button>
+      </div>
+    </div>
+
+    <!-- 登録済み結果一覧 -->
+    <div class="card">
+      <h2 style="font-size:1rem; margin:0 0 6px;">登録済みレース結果プレビュー</h2>
+      <table class="summary-table">
+        <thead>
+          <tr>
+            <th>レース名</th>
+            <th>部門</th>
+            <th>1位</th>
+            <th>2位</th>
+            <th>3位</th>
+            <th>4位</th>
+            <th>ボーナス</th>
+          </tr>
+        </thead>
+        <tbody id="resultsBody">
+          <tr>
+            <td colspan="7" style="color:var(--muted); text-align:center;">まだ登録された結果はありません</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    // 初期サンプルデータ（画面画像に近い構成＋部門明示）
+    const SAMPLE_CSV = `部門,ゼッケン,氏名,車名
+ビーバー,ビーバー001,蒼,奈良の鹿ソニック
+ビーバー,ビーバー002,陽翔,明日香スター
+ビーバー,ビーバー003,凜,三輪ブルー
+ビーバー,ビーバー004,咲良,田原本ロケット
+ビーバー,ビーバー005,悠真,川西サンダー
+ビーバー,ビーバー006,杏,初瀬ウイング
+うさぎ,うさぎ002,ひまり,三輪山ライト
+うさぎ,うさぎ003,朝陽,箸墓スピード
+うさぎ,うさぎ004,美羽,寺川ジェット
+うさぎ,うさぎ005,律,高田さくら号
+うさぎ,うさぎ006,優斗,葛城ファルコン
+うさぎ,うさぎ007,琴音,矢田丘ノリーズ
+うさぎ,うさぎ008,睦,東牛駒サンダー
+うさぎ,うさぎ009,莉子,高山竹とんぼ号
+うさぎ,うさぎ010,颯太,白庭マッハ
+うさぎ,うさぎ011,紬,橿原神宮スター
+うさぎ,うさぎ012,健太,畝傍山エクスプレス
+しか,しか001,結菜,三輪山フラッシュ`;
+
+    let allCars = [];
+    const registeredResults = [];
+
+    const rankSelectIds = ["rank1", "rank2", "rank3", "rank4"];
+
+    // 部門名の正規化
+    function normalizeDept(rawValue) {
+      const s = String(rawValue || "").trim();
+      if (!s) return "";
+      const lower = s.toLowerCase();
+      if (s.includes("ビーバー") || lower.includes("bvs") || lower.includes("beaver")) {
+        return "ビーバー";
+      }
+      if (s.includes("うさぎ") || lower.includes("cs") || lower.includes("rabbit")) {
+        return "うさぎ";
+      }
+      if (s.includes("しか") || lower.includes("bs") || lower.includes("deer")) {
+        return "しか";
+      }
+      return s;
+    }
+
+    // 1行分のCSVをクォーテーション考慮でパース
+    function parseCsvLine(line) {
+      const result = [];
+      let current = "";
+      let inQuotes = false;
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        const next = line[i + 1];
+        if (ch === '"') {
+          if (inQuotes && next === '"') {
+            current += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (ch === "," && !inQuotes) {
+          result.push(current.trim());
+          current = "";
+        } else {
+          current += ch;
+        }
+      }
+      result.push(current.trim());
+      return result;
+    }
+
+    // CSV文字列をマシン配列に変換
+    function parseCarsFromCsv(csvText) {
+      const lines = csvText
+        .replace(/^﻿/, "") // BOM除去
+        .split(/?
+/)
+        .map((l) => l.trim())
+        .filter((l) => l.length > 0);
+
+      if (lines.length === 0) return [];
+
+      const headers = parseCsvLine(lines[0]).map((h) => h.toLowerCase());
+      const findIdx = (candidates) => {
+        for (const name of candidates) {
+          const idx = headers.findIndex((h) => h === name.toLowerCase() || h.includes(name.toLowerCase()));
+          if (idx !== -1) return idx;
+        }
+        return -1;
+      };
+
+      const deptIdx = findIdx(["部門", "department", "dept", "隊", "クラス", "class", "category"]);
+      const numIdx = findIdx(["ゼッケン", "番号", "no", "number", "car_no", "id"]);
+      const ownerIdx = findIdx(["氏名", "名前", "レーサー", "owner", "member", "name"]);
+      const carIdx = findIdx(["車名", "マシン名", "マシン", "car", "car_name", "machine"]);
+
+      // ヘッダー行かどうか判定
+      const hasHeader = [deptIdx, numIdx, ownerIdx, carIdx].some((i) => i !== -1);
+      const dataLines = hasHeader ? lines.slice(1) : lines;
+
+      return dataLines.map((line, index) => {
+        const cols = parseCsvLine(line);
+        const rawDept = deptIdx !== -1 ? cols[deptIdx] : "";
+        const number = numIdx !== -1 ? cols[numIdx] : cols[0] || `NO-${index + 1}`;
+        const owner = ownerIdx !== -1 ? cols[ownerIdx] : cols[1] || "";
+        const carName = carIdx !== -1 ? cols[carIdx] : cols[2] || "";
+
+        // 部門が空の場合はゼッケンや車名・氏名から自動推定
+        const dept =
+          normalizeDept(rawDept) ||
+          normalizeDept(number) ||
+          normalizeDept(carName) ||
+          normalizeDept(owner) ||
+          "未分類";
+
+        const label = `${number}（${owner || "未設定"}／${carName || "未設定"}）`;
+        return {
+          id: `${dept}__${number}__${index}`,
+          dept,
+          number,
+          owner,
+          carName,
+          label
+        };
+      });
+    }
+
+    // 現在選択中のレース部門を取得
+    function getSelectedDepartment() {
+      const raceVal = document.getElementById("raceSelect").value;
+      const parts = raceVal.split("|");
+      return parts[1] || "ALL";
+    }
+
+    // レース名プレビュー更新
+    function updateRaceTitlePreview() {
+      const raceLabel = document.getElementById("raceSelect").value.split("|")[0];
+      const note = document.getElementById("customNote").value.trim();
+      document.getElementById("selectedRaceName").value = note ? `${raceLabel} - ${note}` : raceLabel;
+    }
+
+    // プルダウンを部門別に絞り込み描画
+    function refreshRankSelects() {
+      const dept = getSelectedDepartment();
+      const badge = document.getElementById("deptBadge");
+      badge.textContent = dept === "ALL" ? "対象部門：全クラス表示" : `対象部門：${dept}のみ表示`;
+
+      const filteredCars =
+        dept === "ALL"
+          ? allCars
+          : allCars.filter((car) => normalizeDept(car.dept) === normalizeDept(dept));
+
+      const warnBox = document.getElementById("warnBox");
+      if (dept !== "ALL" && filteredCars.length === 0) {
+        warnBox.style.display = "block";
+        warnBox.textContent = `「${dept}」部門に該当するマシンがCSV内に見つかりません。CSVの「部門」列またはゼッケン表記を確認してください。`;
+      } else {
+        warnBox.style.display = "none";
+        warnBox.textContent = "";
+      }
+
+      rankSelectIds.forEach((selectId) => {
+        const sel = document.getElementById(selectId);
+        const prevVal = sel.value;
+
+        sel.innerHTML = "";
+        const emptyOpt = document.createElement("option");
+        emptyOpt.value = "";
+        emptyOpt.textContent = "-- 選択なし --";
+        sel.appendChild(emptyOpt);
+
+        filteredCars.forEach((car) => {
+          const opt = document.createElement("option");
+          opt.value = car.id;
+          opt.textContent = car.label;
+          sel.appendChild(opt);
+        });
+
+        // 対象部門に存在しない他部門マシンが選ばれていた場合はクリア
+        const existsInDept = filteredCars.some((c) => c.id === prevVal);
+        sel.value = existsInDept ? prevVal : "";
+      });
+    }
+
+    // 結果一覧テーブル描画
+    function renderResultsTable() {
+      const tbody = document.getElementById("resultsBody");
+      if (registeredResults.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="color:var(--muted); text-align:center;">まだ登録された結果はありません</td></tr>`;
+        return;
+      }
+
+      const getLabelById = (id) => {
+        if (!id) return "-- 選択なし --";
+        const found = allCars.find((c) => c.id === id);
+        return found ? found.label : id;
+      };
+
+      tbody.innerHTML = registeredResults
+        .map(
+          (r) => `
+          <tr>
+            <td>${escapeHtml(r.raceName)}</td>
+            <td><span class="pill-dept">${escapeHtml(r.dept)}</span></td>
+            <td>${escapeHtml(getLabelById(r.r1))}</td>
+            <td>${escapeHtml(getLabelById(r.r2))}</td>
+            <td>${escapeHtml(getLabelById(r.r3))}</td>
+            <td>${escapeHtml(getLabelById(r.r4))}</td>
+            <td>${escapeHtml(String(r.bonus))}pt</td>
+          </tr>
+        `
+        )
+        .join("");
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function applyCsvText(csvText, sourceLabel) {
+      allCars = parseCarsFromCsv(csvText);
+      const deptCounts = allCars.reduce((acc, c) => {
+        acc[c.dept] = (acc[c.dept] || 0) + 1;
+        return acc;
+      }, {});
+      const summary = Object.entries(deptCounts)
+        .map(([k, v]) => `${k}:${v}台`)
+        .join(" / ");
+      document.getElementById("csvStatus").textContent =
+        `${sourceLabel}（計${allCars.length}台：${summary || "0台"}）`;
+      refreshRankSelects();
+    }
+
+    // イベント登録
+    document.getElementById("csvFileInput").addEventListener("change", (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        applyCsvText(String(ev.target?.result || ""), `読込完了：${file.name}`);
+      };
+      reader.readAsText(file, "UTF-8");
+    });
+
+    document.getElementById("loadSampleBtn").addEventListener("click", () => {
+      applyCsvText(SAMPLE_CSV, "サンプルCSV反映済");
+    });
+
+    document.getElementById("raceSelect").addEventListener("change", () => {
+      updateRaceTitlePreview();
+      refreshRankSelects();
+    });
+
+    document.getElementById("customNote").addEventListener("input", updateRaceTitlePreview);
+
+    document.getElementById("clearRanksBtn").addEventListener("click", () => {
+      rankSelectIds.forEach((id) => {
+        document.getElementById(id).value = "";
+      });
+    });
+
+    document.getElementById("registerBtn").addEventListener("click", () => {
+      const dept = getSelectedDepartment();
+      const allowedIds = new Set(
+        (dept === "ALL"
+          ? allCars
+          : allCars.filter((c) => normalizeDept(c.dept) === normalizeDept(dept))
+        ).map((c) => c.id)
+      );
+
+      const vals = rankSelectIds.map((id) => document.getElementById(id).value);
+      const invalid = vals.some((v) => v && !allowedIds.has(v));
+      if (invalid) {
+        alert("選択中のレース部門と異なるマシンが含まれています。確認してください。");
+        return;
+      }
+
+      registeredResults.unshift({
+        raceName: document.getElementById("selectedRaceName").value,
+        dept,
+        r1: vals[0],
+        r2: vals[1],
+        r3: vals[2],
+        r4: vals[3],
+        bonus: document.getElementById("bonusPt").value
+      });
+      renderResultsTable();
+    });
+
+    // 初期起動
+    updateRaceTitlePreview();
+    applyCsvText(SAMPLE_CSV, "初期サンプル反映済");
+  </script>
+</body>
+</html>
