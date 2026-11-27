@@ -349,7 +349,8 @@
     function parseCarsFromCsv(csvText) {
       const lines = csvText
         .replace(/^﻿/, "") // BOM除去
-        .split(/?
+        .split(/
+?
 /)
         .map((l) => l.trim())
         .filter((l) => l.length > 0);
