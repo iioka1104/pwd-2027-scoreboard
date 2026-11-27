@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2027 パインウッドダービー | リアルタイム速報＆イベントボード</title>
+  <style>
+    :root {
+      --bg-page: #fdf4ff;
+      --bg-grad: linear-gradient(155deg, #fff1f2 0%, #fdf4ff 45%, #eef2ff 100%);
+      --bg-card: #ffffff;
+      --text-main: #1e1b4b;
+      --text-muted: #64748b;
+      --border-light: #e9d5ff;
+      --pink: #db2777;
+      --purple: #7c3aed;
+      --indigo: #4338ca;
+      --amber: #f59e0b;
+      --shadow: 0 10px 28px rgba(109, 40, 217, 0.08);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+      background: var(--bg-grad);
+      color: var(--text-main);
+      line-height: 1.55;
+      min-height: 100vh;
+    }
+
+    .hero-header {
+      background: linear-gradient(125deg, #be185d 0%, #7c3aed 48%, #2563eb 100%);
+      color: #fff;
+      padding: 20px 20px 24px;
+      box-shadow: 0 8px 24px rgba(124, 58, 237, 0.25);
+    }
+
+    .hero-inner {
+      max-width: 1140px;
+      margin: 0 auto;
+    }
+
+    .hero-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .hero-badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .live-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.28);
+      border: 1px solid rgba(167, 243, 208, 0.65);
+      color: #ecfdf5;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4ade80;
+      box-shadow: 0 0 8px #4ade80;
+    }
+
+    .live-dot.local {
+      background: #fbbf24;
+      box-shadow: none;
+    }
+
+    .hero-title {
+      margin: 6px 0 2px;
+      font-size: 1.55rem;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+    }
+
+    .hero-sub {
+      font-size: 0.88rem;
+      opacity: 0.95;
+    }
+
+    .rule-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #fef08a;
+      color: #451a03;
+      text-decoration: none;
+      font-weight: 900;
+      font-size: 0.86rem;
+      padding: 9px 15px;
+      border-radius: 999px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+    }
+
+    .podium-banner {
+      margin-top: 16px;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 16px;
+      padding: 14px 16px;
+      backdrop-filter: blur(6px);
+    }
+
+    .podium-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+      font-weight: 900;
+      font-size: 0.95rem;
+    }
+
+    .podium-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    @media (max-width: 720px) {
+      .podium-grid { grid-template-columns: 1fr; }
+    }
+
+    .podium-card {
+      background: #fff;
+      color: var(--text-main);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+    }
+
+    .podium-card.rank-1 { border: 2.5px solid #f59e0b; background: linear-gradient(135deg, #fffbeb 0%, #ffffff 100%); }
+    .podium-card.rank-2 { border: 2px solid #94a3b8; background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%); }
+    .podium-card.rank-3 { border: 2px solid #d97706; background: linear-gradient(135deg, #fff7ed 0%, #ffffff 100%); }
+
+    .podium-medal { font-size: 1.45rem; line-height: 1; }
+    .podium-name { font-size: 1.08rem; font-weight: 900; color: #1e1b4b; }
+    .podium-meta { font-size: 0.75rem; color: var(--text-muted); }
+    .podium-score { font-size: 1.25rem; font-weight: 900; color: var(--pink); white-space: nowrap; }
+
+    .container {
+      max-width: 1140px;
+      margin: 18px auto 56px;
+      padding: 0 16px;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    @media (max-width: 820px) {
+      .tabs { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .tab-btn {
+      background: #fff;
+      color: var(--text-main);
+      border: 2px solid #e9d5ff;
+      border-radius: 14px;
+      padding: 11px 12px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: all 0.15s ease;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #db2777 0%, #7c3aed 100%);
+      color: #fff;
+      border-color: transparent;
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 1.08rem;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pill-tag {
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: #fae8ff;
+      color: #86198f;
+    }
+
+    /* 部門クイック絞り込みバー（ビーバーだけリストアップ等） */
+    .division-filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      padding: 10px 12px;
+      background: #faf5ff;
+      border: 1.5px solid #e9d5ff;
+      border-radius: 14px;
+    }
+
+    .division-label {
+      font-size: 0.82rem;
+      font-weight: 900;
+      color: #581c87;
+      margin-right: 4px;
+    }
+
+    .div-chip {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1.5px solid #d8b4fe;
+      background: #fff;
+      color: #4c1d95;
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+
+    .div-chip.active {
+      background: #db2777;
+      color: #fff;
+      border-color: #db2777;
+      box-shadow: 0 3px 10px rgba(219, 39, 119, 0.25);
+    }
+
+    .leader-highlight-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .kid-rank-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 14px;
+      border: 1.5px solid #f3e8ff;
+      background: linear-gradient(90deg, #fdf4ff 0%, #ffffff 70%);
+    }
+
+    .kid-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+
+    .rank-num-badge {
+      width: 28px; height: 28px; border-radius: 999px;
+      background: #7c3aed; color: #fff; font-weight: 900; font-size: 0.85rem;
+      display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .rank-num-badge.top1 { background: #f59e0b; }
+    .rank-num-badge.top2 { background: #64748b; }
+    .rank-num-badge.top3 { background: #d97706; }
+
+    .kid-name-main { font-size: 1.05rem; font-weight: 900; color: #1e1b4b; }
+    .kid-score-main { font-size: 1.15rem; font-weight: 900; color: #db2777; white-space: nowrap; }
+
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #f3e8ff;
+      text-align: left;
+      white-space: nowrap;
+    }
+    th {
+      background: #faf5ff;
+      font-weight: 800;
+      font-size: 0.82rem;
+      color: #6b21a8;
+    }
+
+    .col-name-first { font-size: 1.02rem; font-weight: 900; color: #1e1b4b; }
+    .col-score-second { font-size: 1.04rem; font-weight: 900; color: #db2777; }
+    .col-sub-info { font-size: 0.82rem; color: var(--text-muted); }
+
+    .history-card {
+      border: 1.5px solid #e9d5ff;
+      background: linear-gradient(135deg, #fff 0%, #fdf4ff 100%);
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+    }
+
+    .history-top {
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;
+      font-weight: 800; color: #4c1d95;
+    }
+
+    .history-ranks { margin-top: 6px; font-size: 0.88rem; font-weight: 700; color: #1e293b; }
+
+    .form-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 12px; }
+    .form-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 12px; }
+    @media (max-width: 720px) {
+      .form-grid-2, .form-grid-3 { grid-template-columns: 1fr; }
+    }
+
+    label { display: block; font-size: 0.85rem; font-weight: 800; margin-bottom: 5px; color: #312e81; }
+    input[type="text"], input[type="number"], select, textarea {
+      width: 100%; padding: 10px 12px; border: 1.5px solid #d8b4fe; border-radius: 12px;
+      font-size: 0.92rem; font-family: inherit; background: #fff; color: var(--text-main);
+    }
+
+    .race-num-grid {
+      display: grid; grid-template-columns: repeat(9, 1fr); gap: 6px; margin-bottom: 12px;
+    }
+    @media (max-width: 640px) {
+      .race-num-grid { grid-template-columns: repeat(5, 1fr); }
+    }
+
+    .num-chip {
+      padding: 8px 4px; border-radius: 10px; border: 1.5px solid #d8b4fe;
+      background: #faf5ff; color: #4c1d95; font-weight: 800; cursor: pointer;
+    }
+    .num-chip.active { background: #7c3aed; color: #fff; border-color: #7c3aed; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+      color: #fff; border: none; border-radius: 12px;
+      padding: 10px 16px; font-size: 0.9rem; font-weight: 800; cursor: pointer;
+    }
+    .btn-secondary {
+      background: #fff; color: #4c1d95; border: 1.5px solid #d8b4fe; border-radius: 12px;
+      padding: 10px 16px; font-size: 0.9rem; font-weight: 800; cursor: pointer;
+    }
+    .btn-rose {
+      background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+      color: #fff; border: none; border-radius: 12px;
+      padding: 12px 18px; font-size: 0.96rem; font-weight: 900; cursor: pointer; width: 100%;
+    }
+    .btn-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; margin-top: 10px; }
+
+    .utility-section {
+      margin-top: 28px; border-top: 2px dashed #e9d5ff; padding-top: 18px;
+    }
+    .utility-toggle-btn {
+      width: 100%; background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 14px;
+      padding: 12px 16px; font-size: 0.9rem; font-weight: 800; color: #475569;
+      cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+    }
+    .utility-body { display: none; margin-top: 12px; }
+    .utility-body.open { display: block; }
+
+    .hint { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
+
+    .toast {
+      position: fixed; bottom: 20px; right: 20px; background: #1e1b4b; color: #fff;
+      padding: 10px 16px; border-radius: 12px; font-size: 0.86rem; font-weight: 800;
+      opacity: 0; transform: translateY(8px); transition: all 0.2s ease; z-index: 99; pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    .modal-backdrop {
+      display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55);
+      z-index: 60; align-items: center; justify-content: center; padding: 16px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-box { background: #fff; border-radius: 16px; max-width: 520px; width: 100%; padding: 20px; }
+  </style>
+</head>
+<body>
+  <header class="hero-header">
+    <div class="hero-inner">
+      <div class="hero-top">
+        <div>
+          <div class="hero-badge-row">
+            <span class="hero-badge">🏁 2027 パインウッドダービー 大会速報ボード</span>
+            <span class="live-pill" id="liveSyncPill">
+              <span class="live-dot local" id="liveSyncDot"></span>
+              <span id="liveSyncText">リアルタイム同期準備中</span>
+            </span>
+          </div>
+          <h1 class="hero-title">みんなで応援！パインウッドダービー速報</h1>
+          <div class="hero-sub">白熱のレース結果・デザイン賞・チームバトル・レース履歴をリアルタイムにお届け！</div>
+        </div>
+        <a class="rule-link-btn" href="#rulebook-modal" onclick="openRuleModal(event)">📖 かんたんルールブック・レース形式</a>
+      </div>
+
+      <div class="podium-banner">
+        <div class="podium-heading">
+          <span>🏆 ただいまの上位優秀者（総合スコアTOP3）</span>
+          <span style="font-size:0.78rem; opacity:0.92;">レースpt＋デザイン賞・指導者ボーナス反映</span>
+        </div>
+        <div class="podium-grid" id="topThreeShowcase"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <nav class="tabs" role="tablist">
+      <button class="tab-btn active" data-tab="ranking" onclick="switchTab('ranking')">🏆 個人ランキング</button>
+      <button class="tab-btn" data-tab="team" onclick="switchTab('team')">🚩 チーム戦（ボーナス込）</button>
+      <button class="tab-btn" data-tab="history" onclick="switchTab('history')">📜 レース履歴</button>
+      <button class="tab-btn" data-tab="input" onclick="switchTab('input')">✏️ レース・賞の入力</button>
+    </nav>
+
+    <!-- 1. 個人ランキング -->
+    <section id="tab-ranking" class="tab-panel active">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">🌟 個人スコアランキング</h2>
+          <span class="pill-tag" id="entryCountBadge">表示 0 台</span>
+        </div>
+
+        <!-- 部門別クイック絞り込み（ビーバーだけリストアップ等） -->
+        <div class="division-filter-bar" id="divisionFilterBar">
+          <span class="division-label">🚗 車種・部門リストアップ:</span>
+          <button type="button" class="div-chip active" data-div="" onclick="selectDivision('')">すべて</button>
+          <button type="button" class="div-chip" data-div="ビーバー" onclick="selectDivision('ビーバー')">ビーバーだけ</button>
+          <button type="button" class="div-chip" data-div="うさぎ" onclick="selectDivision('うさぎ')">うさぎだけ</button>
+          <button type="button" class="div-chip" data-div="しか" onclick="selectDivision('しか')">しかだけ</button>
+          <button type="button" class="div-chip" data-div="くま" onclick="selectDivision('くま')">くまだけ</button>
+        </div>
+
+        <div class="leader-highlight-grid" id="topLeadersCards"></div>
+
+        <div class="form-grid-2">
+          <div>
+            <label for="filterTeam">チームで絞り込み</label>
+            <select id="filterTeam" onchange="renderAll()">
+              <option value="">すべてのチーム</option>
+            </select>
+          </div>
+          <div>
+            <label for="filterKeyword">名前・マシン名・カーナンバーで探す</label>
+            <input type="text" id="filterKeyword" placeholder="例: 田中 蒼 / ソニック / ビーバー" oninput="renderAll()" />
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>参加者名</th>
+                <th>合計スコア</th>
+                <th>順位</th>
+                <th>マシン名</th>
+                <th>カーナンバー</th>
+                <th>所属チーム</th>
+              </tr>
+            </thead>
+            <tbody id="individualTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. チーム戦 -->
+    <section id="tab-team" class="tab-panel">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">🚩 チーム戦ランキング（デザイン賞＆指導者ボーナス込）</h2>
+          <span class="pill-tag">平均pt ＝ 総合pt ÷ 出走人数</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>所属チーム</th>
+                <th>平均スコア</th>
+                <th>順位</th>
+                <th>レースpt</th>
+                <th>デザイン賞pt</th>
+                <th>指導者ボーナス</th>
+                <th>出走人数</th>
+              </tr>
+            </thead>
+            <tbody id="teamTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. レース履歴 -->
+    <section id="tab-history" class="tab-panel">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">📜 レース＆表彰・ボーナス履歴</h2>
+          <span class="pill-tag">最新順</span>
+        </div>
+        <div id="raceHistoryList"></div>
+      </div>
+    </section>
+
+    <!-- 4. レース順位・デザイン賞・指導者ボーナスの入力 -->
+    <section id="tab-input" class="tab-panel">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">🏁 レース順位入力（1位〜4位）</h2>
+          <span class="pill-tag">全ラウンド対応</span>
+        </div>
+
+        <!-- 順位プルダウン用の車種・部門絞り込み -->
+        <div class="division-filter-bar" id="inputDivisionFilterBar">
+          <span class="division-label">🎯 プルダウン絞り込み:</span>
+          <button type="button" class="div-chip active" data-div="" onclick="selectInputDivision('')">すべて</button>
+          <button type="button" class="div-chip" data-div="ビーバー" onclick="selectInputDivision('ビーバー')">ビーバーだけ</button>
+          <button type="button" class="div-chip" data-div="うさぎ" onclick="selectInputDivision('うさぎ')">うさぎだけ</button>
+          <button type="button" class="div-chip" data-div="しか" onclick="selectInputDivision('しか')">しかだけ</button>
+          <button type="button" class="div-chip" data-div="くま" onclick="selectInputDivision('くま')">くまだけ</button>
+        </div>
+
+        <div class="form-grid-2">
+          <div>
+            <label for="raceSelect">レース区分・ラウンド</label>
+            <select id="raceSelect" onchange="handleRaceSelectChange()">
+              <optgroup label="総合・チャンピオン戦（第1〜第3ラウンド）">
+                <option value="総合チャンピオン戦|8,6,4,2">総合チャンピオン戦（8/6/4/2pt）</option>
+                <option value="チャンピオン戦第1ラウンド|6,5,4,3">チャンピオン戦第1ラウンド（6/5/4/3pt）</option>
+                <option value="チャンピオン戦第2ラウンド|7,5,4,3">チャンピオン戦第2ラウンド（7/5/4/3pt）</option>
+                <option value="チャンピオン戦第3ラウンド|8,6,4,2">チャンピオン戦第3ラウンド・決勝（8/6/4/2pt）</option>
+              </optgroup>
+              <optgroup label="部門別レース・ラウンド">
+                <option value="ビーバー第1ラウンド|4,3,2,1" selected>ビーバー第1ラウンド（4/3/2/1pt）</option>
+                <option value="うさぎ第1ラウンド|4,3,2,1">うさぎ第1ラウンド（4/3/2/1pt）</option>
+                <option value="しか第1ラウンド|4,3,2,1">しか第1ラウンド（4/3/2/1pt）</option>
+                <option value="くま第1ラウンド|4,3,2,1">くま第1ラウンド（4/3/2/1pt）</option>
+                <option value="ビーバー第1レース|4,3,2,1">ビーバー第1レース（4/3/2/1pt）</option>
+                <option value="うさぎ第1レース|4,3,2,1">うさぎ第1レース（4/3/2/1pt）</option>
+                <option value="しか第1レース|4,3,2,1">しか第1レース（4/3/2/1pt）</option>
+                <option value="くま第1レース|4,3,2,1">くま第1レース（4/3/2/1pt）</option>
+              </optgroup>
+              <optgroup label="チャレンジ戦（第1〜第3ラウンド）">
+                <option value="チャレンジ戦第1ラウンド|4,3,2,1">チャレンジ戦第1ラウンド（4/3/2/1pt）</option>
+                <option value="チャレンジ戦第2ラウンド|5,4,3,2">チャレンジ戦第2ラウンド（5/4/3/2pt）</option>
+                <option value="チャレンジ戦第3ラウンド|8,6,4,2">チャレンジ戦第3ラウンド・決勝（8/6/4/2pt）</option>
+              </optgroup>
+              <option value="__CUSTOM__|4,3,2,1">その他・カスタムレース名...</option>
+            </select>
+          </div>
+          <div>
+            <label for="pointPresetSelect">配点ルール（1位〜4位）</label>
+            <select id="pointPresetSelect">
+              <option value="4,3,2,1">標準（1位:4pt / 2位:3pt / 3位:2pt / 4位:1pt）</option>
+              <option value="6,5,4,3">上位戦1（1位:6pt / 2位:5pt / 3位:4pt / 4位:3pt）</option>
+              <option value="7,5,4,3">上位戦2（1位:7pt / 2位:5pt / 3位:4pt / 4位:3pt）</option>
+              <option value="8,6,4,2">総合チャンピオン戦・決勝（1位:8pt / 2位:6pt / 3位:4pt / 4位:2pt）</option>
+            </select>
+          </div>
+        </div>
+
+        <label>レース番号（００１〜００８）</label>
+        <div class="race-num-grid" id="raceNumGrid">
+          <button type="button" class="num-chip active" data-num="００１" onclick="selectRaceNumber('００１')">００１</button>
+          <button type="button" class="num-chip" data-num="００２" onclick="selectRaceNumber('００２')">００２</button>
+          <button type="button" class="num-chip" data-num="００３" onclick="selectRaceNumber('００３')">００３</button>
+          <button type="button" class="num-chip" data-num="００４" onclick="selectRaceNumber('００４')">００４</button>
+          <button type="button" class="num-chip" data-num="００５" onclick="selectRaceNumber('００５')">００５</button>
+          <button type="button" class="num-chip" data-num="００６" onclick="selectRaceNumber('００６')">００６</button>
+          <button type="button" class="num-chip" data-num="００７" onclick="selectRaceNumber('００７')">００７</button>
+          <button type="button" class="num-chip" data-num="００８" onclick="selectRaceNumber('００８')">００８</button>
+          <button type="button" class="num-chip" data-num="" onclick="selectRaceNumber('')">番号なし</button>
+        </div>
+
+        <div class="form-grid-2">
+          <div>
+            <label for="customRaceName">カスタム名・補足</label>
+            <input type="text" id="customRaceName" placeholder="例: 決勝ヒート" oninput="updateRacePreview()" />
+          </div>
+          <div>
+            <label>選択中のレース名</label>
+            <div style="padding:10px 12px; background:#faf5ff; border:1.5px solid #e9d5ff; border-radius:12px; font-weight:900; color:#6b21a8;" id="raceIdPreview">ビーバー第1ラウンド００１</div>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div>
+            <label for="rank1Select">1位</label>
+            <select id="rank1Select"><option value="">-- 選択なし --</option></select>
+          </div>
+          <div>
+            <label for="rank2Select">2位</label>
+            <select id="rank2Select"><option value="">-- 選択なし --</option></select>
+          </div>
+        </div>
+        <div class="form-grid-2">
+          <div>
+            <label for="rank3Select">3位</label>
+            <select id="rank3Select"><option value="">-- 選択なし --</option></select>
+          </div>
+          <div>
+            <label for="rank4Select">4位</label>
+            <select id="rank4Select"><option value="">-- 選択なし --</option></select>
+          </div>
+        </div>
+
+        <button type="button" class="btn-rose" onclick="registerRaceResult()">🏁 レース結果を登録する</button>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">🎨 デザイン賞・チームデザイン賞ボーナス</h2>
+          <span class="pill-tag">個人＆チーム反映</span>
+        </div>
+        <div class="form-grid-3">
+          <div>
+            <label for="designCarSelect">デザイン賞 受賞マシン</label>
+            <select id="designCarSelect"><option value="">-- 選択なし --</option></select>
+          </div>
+          <div>
+            <label for="designAwardName">賞の名称</label>
+            <input type="text" id="designAwardName" placeholder="例: ベストデザイン賞・アイデア賞" />
+          </div>
+          <div>
+            <label for="designBonusPt">ボーナスポイント</label>
+            <input type="number" id="designBonusPt" value="3" min="0" max="50" />
+          </div>
+        </div>
+        <button type="button" class="btn-primary" style="width:100%;" onclick="registerDesignAward()">🎨 デザイン賞を登録（個人＆チームへ反映）</button>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">🧢 指導者レース チームボーナス</h2>
+          <span class="pill-tag">応援チームへ加算</span>
+        </div>
+        <div class="form-grid-3">
+          <div>
+            <label for="leaderTeamSelect">ボーナス対象チーム</label>
+            <select id="leaderTeamSelect"></select>
+          </div>
+          <div>
+            <label for="leaderRaceNote">指導者レース結果メモ</label>
+            <input type="text" id="leaderRaceNote" placeholder="例: 指導者エキシビション 1位" />
+          </div>
+          <div>
+            <label for="leaderBonusPt">チームボーナスpt</label>
+            <input type="number" id="leaderBonusPt" value="5" min="0" max="50" />
+          </div>
+        </div>
+        <button type="button" class="btn-primary" style="width:100%;" onclick="registerLeaderBonus()">🧢 指導者レースボーナスを反映</button>
+      </div>
+    </section>
+
+    <!-- 事務作業・名簿・接続設定は一番下に折りたたみ展開 -->
+    <section class="utility-section">
+      <button type="button" class="utility-toggle-btn" onclick="toggleUtilityPanel()">
+        <span>🛠️ スタッフ作業・名簿取込・出走人数・接続設定を開く</span>
+        <span id="utilityArrow">▼</span>
+      </button>
+
+      <div class="utility-body" id="utilityBody">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">参加者名簿の取り込み（CSV / 4列コピペ）</h3>
+            <span class="pill-tag">カーナンバー,マシン名,所属チーム,参加者名</span>
+          </div>
+          <textarea id="rosterInput" rows="5" placeholder="ビーバー００１,奈良の鹿ソニック,磯城1団 ビーバー隊,田中 蒼&#10;うさぎ００１,飛鳥アロー,磯城1団 カブ2組,佐藤 結衣"></textarea>
+          <div class="btn-row">
+            <button type="button" class="btn-primary" onclick="importRoster(false)">追加・上書き取り込み</button>
+            <button type="button" class="btn-secondary" onclick="importRoster(true)">全件入替で取り込み</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">チーム別 当日出走人数</h3>
+            <span class="pill-tag">平均点分母</span>
+          </div>
+          <div id="entrantsGrid" class="form-grid-3"></div>
+          <button type="button" class="btn-primary" style="width:100%; margin-top:8px;" onclick="saveEntrants()">出走人数を保存</button>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">端末共有・同期設定</h3>
+            <span class="pill-tag" id="roomBadge">pwd-2027-nara</span>
+          </div>
+          <div class="hint" id="syncStatusNote" style="margin-top:0;">接続状態: 待機中</div>
+          <div class="btn-row">
+            <button type="button" class="btn-secondary" onclick="openFirebaseModal()">接続先を変更</button>
+            <button type="button" class="btn-secondary" onclick="copyShareUrl()">共有リンクをコピー</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- かんたんルールブック＆レース形式モーダル -->
+  <div class="modal-backdrop" id="ruleModal" onclick="if(event.target===this) closeRuleModal()">
+    <div class="modal-box">
+      <h3 style="margin-top:0;">📖 かんたんルールブック＆レース形式</h3>
+      <ul style="padding-left:18px; font-size:0.9rem;">
+        <li><strong>部門・チャレンジ戦：</strong> 各ラウンドの順位に応じてポイントを獲得します（4/3/2/1pt、5/4/3/2pt、8/6/4/2pt など）。</li>
+        <li><strong>チャンピオン戦・総合チャンピオン戦：</strong> 第1〜第3ラウンドや総合チャンピオン戦（8/6/4/2pt）で上位入賞を目指します。</li>
+        <li><strong>デザイン賞＆指導者ボーナス：</strong> 素敵なマシンへのデザイン賞や、指導者レースの結果も個人・チームのスコアに加算されます。</li>
+        <li><strong>チーム戦：</strong> 各チームの合計スコアを当日出走人数で割った平均ポイントで競います。</li>
+      </ul>
+      <button type="button" class="btn-primary" style="width:100%;" onclick="closeRuleModal()">閉じる</button>
+    </div>
+  </div>
+
+  <!-- 接続先設定モーダル -->
+  <div class="modal-backdrop" id="firebaseModal" onclick="if(event.target===this) closeFirebaseModal()">
+    <div class="modal-box">
+      <h3 style="margin-top:0;">同期データベース設定</h3>
+      <div style="margin-bottom:12px;">
+        <label for="fbUrlInput">データベース URL</label>
+        <input type="text" id="fbUrlInput" />
+      </div>
+      <div style="margin-bottom:16px;">
+        <label for="fbRoomInput">ルーム名</label>
+        <input type="text" id="fbRoomInput" />
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn-primary" onclick="saveFirebaseConfig()">保存して反映</button>
+        <button type="button" class="btn-secondary" onclick="closeFirebaseModal()">閉じる</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const STORAGE_STATE_KEY = "pwd2027_scoreboard_state_v6";
+    const STORAGE_FB_URL = "pwd2027_fb_url";
+    const STORAGE_FB_ROOM = "pwd2027_fb_room";
+    const DEFAULT_FB_URL = "https://pwd-2027-nara-default-rtdb.firebaseio.com";
+    const DEFAULT_FB_ROOM = "pwd-2027-nara";
+
+    let selectedRaceNum = "００１";
+    let selectedDivision = "";
+    let selectedInputDivision = "";
+
+    const DEFAULT_ENTRANTS = {
+      "磯城1団 ビーバー隊": 8,
+      "磯城1団 カブ1組": 7,
+      "磯城1団 カブ2組": 7,
+      "磯城1団 ボーイ隊": 8,
+      "友団 チームA": 8,
+      "友団 チームB": 8,
+      "磯城1団くま": 1,
+      "大和高田2団くま": 1,
+      "橿原5団くま": 1,
+      "奈良4団くま": 1
+    };
+
+    const DEFAULT_PARTICIPANTS = [
+      { carNo: "ビーバー００１", machine: "奈良の鹿ソニック", team: "磯城1団 ビーバー隊", name: "田中 蒼", racePoints: 0, designPoints: 0 },
+      { carNo: "うさぎ００１", machine: "飛鳥アロー", team: "磯城1団 カブ2組", name: "佐藤 結衣", racePoints: 0, designPoints: 0 },
+      { carNo: "しか００１", machine: "三輪山フラッシュ", team: "磯城1団 カブ1組", name: "鈴木 湊", racePoints: 0, designPoints: 0 },
+      { carNo: "くま００１", machine: "大和路ウィンド", team: "磯城1団 ボーイ隊", name: "高橋 凛", racePoints: 0, designPoints: 0 }
+    ];
+
+    let appState = {
+      participants: JSON.parse(JSON.stringify(DEFAULT_PARTICIPANTS)),
+      entrants: JSON.parse(JSON.stringify(DEFAULT_ENTRANTS)),
+      teamLeaderBonus: {},
+      history: []
+    };
+
+    let pollTimer = null;
+    let lastRemoteUpdatedAt = 0;
+
+    function showToast(msg) {
+      const el = document.getElementById("toast");
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.add("show");
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => el.classList.remove("show"), 2600);
+    }
+
+    function openRuleModal(e) {
+      if (e) e.preventDefault();
+      document.getElementById("ruleModal")?.classList.add("open");
+    }
+    function closeRuleModal() {
+      document.getElementById("ruleModal")?.classList.remove("open");
+    }
+
+    function toggleUtilityPanel() {
+      const body = document.getElementById("utilityBody");
+      const arrow = document.getElementById("utilityArrow");
+      if (!body) return;
+      const open = body.classList.toggle("open");
+      if (arrow) arrow.textContent = open ? "▲" : "▼";
+    }
+
+    function selectDivision(divName) {
+      selectedDivision = divName;
+      document.querySelectorAll("#divisionFilterBar .div-chip").forEach(btn => {
+        btn.classList.toggle("active", btn.getAttribute("data-div") === divName);
+      });
+      renderAll();
+    }
+
+    function selectInputDivision(divName) {
+      selectedInputDivision = divName;
+      document.querySelectorAll("#inputDivisionFilterBar .div-chip").forEach(btn => {
+        btn.classList.toggle("active", btn.getAttribute("data-div") === divName);
+      });
+      renderSelectOptions();
+    }
+
+    function matchesDivision(p, divName) {
+      if (!divName) return true;
+      const hay = `${p.carNo || ""} ${p.team || ""}`.toLowerCase();
+      return hay.includes(divName.toLowerCase());
+    }
+
+    function getFbUrl() {
+      try {
+        const qUrl = new URLSearchParams(window.location.search).get("fbUrl");
+        if (qUrl) {
+          localStorage.setItem(STORAGE_FB_URL, qUrl.trim());
+          return qUrl.trim().replace(/\/+$/, "");
+        }
+        return (localStorage.getItem(STORAGE_FB_URL) || DEFAULT_FB_URL).trim().replace(/\/+$/, "");
+      } catch (_) { return DEFAULT_FB_URL; }
+    }
+
+    function getFbRoom() {
+      try {
+        const qRoom = new URLSearchParams(window.location.search).get("room");
+        if (qRoom) {
+          localStorage.setItem(STORAGE_FB_ROOM, qRoom.trim());
+          return qRoom.trim();
+        }
+        return (localStorage.getItem(STORAGE_FB_ROOM) || DEFAULT_FB_ROOM).trim();
+      } catch (_) { return DEFAULT_FB_ROOM; }
+    }
+
+    function setLiveIndicator(isOnline, labelText) {
+      const dot = document.getElementById("liveSyncDot");
+      const text = document.getElementById("liveSyncText");
+      const note = document.getElementById("syncStatusNote");
+      const badge = document.getElementById("roomBadge");
+      if (dot) dot.classList.toggle("local", !isOnline);
+      if (text) text.textContent = labelText;
+      if (note) note.textContent = `接続状態: ${labelText}（ルーム: ${getFbRoom()}）`;
+      if (badge) badge.textContent = getFbRoom();
+    }
+
+    function saveLocalState() {
+      try { localStorage.setItem(STORAGE_STATE_KEY, JSON.stringify(appState)); } catch (_) {}
+    }
+
+    function loadLocalState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_STATE_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (parsed && Array.isArray(parsed.participants)) {
+          appState.participants = parsed.participants.map(p => ({
+            carNo: p.carNo,
+            machine: p.machine,
+            team: p.team,
+            name: p.name,
+            racePoints: Number(p.racePoints ?? p.points ?? 0) || 0,
+            designPoints: Number(p.designPoints ?? 0) || 0
+          }));
+          appState.entrants = parsed.entrants && typeof parsed.entrants === "object"
+            ? parsed.entrants
+            : JSON.parse(JSON.stringify(DEFAULT_ENTRANTS));
+          appState.teamLeaderBonus = parsed.teamLeaderBonus && typeof parsed.teamLeaderBonus === "object"
+            ? parsed.teamLeaderBonus
+            : {};
+          appState.history = Array.isArray(parsed.history) ? parsed.history : [];
+        }
+      } catch (_) {}
+    }
+
+    async function pushToCloud() {
+      const fbUrl = getFbUrl();
+      const room = getFbRoom();
+      saveLocalState();
+      if (!fbUrl || !room) {
+        setLiveIndicator(false, "ローカル保存中");
+        return;
+      }
+      const nowTs = Date.now();
+      lastRemoteUpdatedAt = nowTs;
+      try {
+        const res = await fetch(`${fbUrl}/rooms/${encodeURIComponent(room)}.json`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            updatedAt: nowTs,
+            participants: appState.participants,
+            entrants: appState.entrants,
+            teamLeaderBonus: appState.teamLeaderBonus,
+            history: appState.history
+          })
+        });
+        if (res.ok) {
+          setLiveIndicator(true, "リアルタイム同期中");
+        } else {
+          setLiveIndicator(false, "ローカル保存中（同期確認中）");
+        }
+      } catch (_) {
+        setLiveIndicator(false, "ローカル保存中（同期確認中）");
+      }
+    }
+
+    async function pullFromCloud() {
+      const fbUrl = getFbUrl();
+      const room = getFbRoom();
+      if (!fbUrl || !room) return;
+      try {
+        const res = await fetch(`${fbUrl}/rooms/${encodeURIComponent(room)}.json`, { cache: "no-store" });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data && Array.isArray(data.participants) && (data.updatedAt || 0) > lastRemoteUpdatedAt) {
+          lastRemoteUpdatedAt = data.updatedAt || Date.now();
+          appState.participants = data.participants.map(p => ({
+            carNo: p.carNo,
+            machine: p.machine,
+            team: p.team,
+            name: p.name,
+            racePoints: Number(p.racePoints ?? p.points ?? 0) || 0,
+            designPoints: Number(p.designPoints ?? 0) || 0
+          }));
+          if (data.entrants && typeof data.entrants === "object") appState.entrants = data.entrants;
+          if (data.teamLeaderBonus && typeof data.teamLeaderBonus === "object") appState.teamLeaderBonus = data.teamLeaderBonus;
+          appState.history = Array.isArray(data.history) ? data.history : [];
+          saveLocalState();
+          renderAll();
+        }
+        setLiveIndicator(true, "リアルタイム同期中");
+      } catch (_) {}
+    }
+
+    function startSyncLoop() {
+      pullFromCloud();
+      clearInterval(pollTimer);
+      pollTimer = setInterval(pullFromCloud, 2000);
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.tab === tabName));
+      document.querySelectorAll(".tab-panel").forEach(panel => panel.classList.toggle("active", panel.id === "tab-" + tabName));
+      renderAll();
+    }
+
+    function selectRaceNumber(numStr) {
+      selectedRaceNum = numStr;
+      document.querySelectorAll("#raceNumGrid .num-chip").forEach(btn => {
+        btn.classList.toggle("active", btn.getAttribute("data-num") === numStr);
+      });
+      updateRacePreview();
+    }
+
+    function handleRaceSelectChange() {
+      const sel = document.getElementById("raceSelect");
+      const presetSel = document.getElementById("pointPresetSelect");
+      const customInp = document.getElementById("customRaceName");
+      if (!sel) return;
+      const [raceKey, ptsStr] = (sel.value || "").split("|");
+      if (presetSel && ptsStr) presetSel.value = ptsStr;
+      if (raceKey === "総合チャンピオン戦") {
+        selectRaceNumber("");
+      } else {
+        selectRaceNumber("００１");
+      }
+      if (raceKey === "__CUSTOM__" && customInp) customInp.focus();
+      updateRacePreview();
+    }
+
+    function getComposedRaceId() {
+      const sel = document.getElementById("raceSelect");
+      const customInp = document.getElementById("customRaceName");
+      const [raceKey] = (sel && sel.value ? sel.value : "ビーバー第1ラウンド|4,3,2,1").split("|");
+      const customStr = customInp ? customInp.value.trim() : "";
+      if (raceKey === "__CUSTOM__") return `${customStr || "カスタムレース"}${selectedRaceNum}`;
+      return `${raceKey}${selectedRaceNum}${customStr ? `（${customStr}）` : ""}`;
+    }
+
+    function updateRacePreview() {
+      const prev = document.getElementById("raceIdPreview");
+      if (prev) prev.textContent = getComposedRaceId();
+    }
+
+    function stepRaceNumber(delta) {
+      const numbered = ["００１", "００２", "００３", "００４", "００５", "００６", "００７", "００８"];
+      const idx = numbered.indexOf(selectedRaceNum);
+      if (idx === -1) return;
+      const next = idx + delta;
+      if (next >= 0 && next < numbered.length) selectRaceNumber(numbered[next]);
+    }
+
+    function getPointArray() {
+      const raw = (document.getElementById("pointPresetSelect")?.value || "4,3,2,1").split(",").map(n => parseInt(n, 10));
+      return [
+        Number.isFinite(raw[0]) ? raw[0] : 4,
+        Number.isFinite(raw[1]) ? raw[1] : 3,
+        Number.isFinite(raw[2]) ? raw[2] : 2,
+        Number.isFinite(raw[3]) ? raw[3] : 1
+      ];
+    }
+
+    function getTotalPoints(p) {
+      return (Number(p.racePoints) || 0) + (Number(p.designPoints) || 0);
+    }
+
+    function registerRaceResult() {
+      const raceId = getComposedRaceId();
+      const ptsArr = getPointArray();
+      const picks = [
+        document.getElementById("rank1Select")?.value || "",
+        document.getElementById("rank2Select")?.value || "",
+        document.getElementById("rank3Select")?.value || "",
+        document.getElementById("rank4Select")?.value || ""
+      ];
+      const nonEmpty = picks.filter(Boolean);
+      if (nonEmpty.length === 0) {
+        showToast("1位〜4位のカーナンバーを1つ以上選択してください");
+        return;
+      }
+      if (new Set(nonEmpty).size !== nonEmpty.length) {
+        showToast("同じカーナンバーが重複しています");
+        return;
+      }
+      const parts = [];
+      picks.forEach((carNo, idx) => {
+        if (!carNo) return;
+        const target = appState.participants.find(p => p.carNo === carNo);
+        const addPt = ptsArr[idx] || 0;
+        if (target) {
+          target.racePoints = (Number(target.racePoints) || 0) + addPt;
+          parts.push(`${idx + 1}位: ${target.name}（${carNo} / +${addPt}pt）`);
+        }
+      });
+      appState.history.unshift({
+        id: Date.now(),
+        kind: "レース結果",
+        title: raceId,
+        detail: parts.join(" ／ "),
+        timeText: new Date().toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })
+      });
+      appState.history = appState.history.slice(0, 40);
+      ["rank1Select", "rank2Select", "rank3Select", "rank4Select"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = "";
+      });
+      stepRaceNumber(1);
+      renderAll();
+      pushToCloud();
+      showToast(`${raceId} の結果を登録しました`);
+    }
+
+    function registerDesignAward() {
+      const carNo = document.getElementById("designCarSelect")?.value || "";
+      const awardName = (document.getElementById("designAwardName")?.value || "").trim() || "デザイン賞";
+      const pt = Math.max(0, parseInt(document.getElementById("designBonusPt")?.value || "0", 10) || 0);
+      if (!carNo) {
+        showToast("デザイン賞の受賞マシンを選択してください");
+        return;
+      }
+      const target = appState.participants.find(p => p.carNo === carNo);
+      if (!target) return;
+      target.designPoints = (Number(target.designPoints) || 0) + pt;
+      appState.history.unshift({
+        id: Date.now(),
+        kind: "デザイン賞",
+        title: `🎨 ${awardName}（${target.team}）`,
+        detail: `受賞: ${target.name}（${target.machine} / ${carNo}） ＋${pt}pt（個人＆チーム加算）`,
+        timeText: new Date().toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })
+      });
+      appState.history = appState.history.slice(0, 40);
+      document.getElementById("designCarSelect").value = "";
+      document.getElementById("designAwardName").value = "";
+      renderAll();
+      pushToCloud();
+      showToast(`${target.name} さんにデザイン賞（+${pt}pt）を登録しました`);
+    }
+
+    function registerLeaderBonus() {
+      const team = document.getElementById("leaderTeamSelect")?.value || "";
+      const note = (document.getElementById("leaderRaceNote")?.value || "").trim() || "指導者レースボーナス";
+      const pt = Math.max(0, parseInt(document.getElementById("leaderBonusPt")?.value || "0", 10) || 0);
+      if (!team) {
+        showToast("対象チームを選択してください");
+        return;
+      }
+      appState.teamLeaderBonus[team] = (Number(appState.teamLeaderBonus[team]) || 0) + pt;
+      appState.history.unshift({
+        id: Date.now(),
+        kind: "指導者ボーナス",
+        title: `🧢 ${note}`,
+        detail: `対象チーム: ${team} ＋${pt}pt`,
+        timeText: new Date().toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })
+      });
+      appState.history = appState.history.slice(0, 40);
+      document.getElementById("leaderRaceNote").value = "";
+      renderAll();
+      pushToCloud();
+      showToast(`${team} に指導者レースボーナス（+${pt}pt）を反映しました`);
+    }
+
+    function importRoster(replaceAll) {
+      const rawText = (document.getElementById("rosterInput")?.value || "").trim();
+      if (!rawText) {
+        showToast("名簿データを貼り付けてください");
+        return;
+      }
+      const parsed = [];
+      for (const line of rawText.split(/\r?\n/).map(l => l.trim()).filter(Boolean)) {
+        const cols = line.includes("\t") ? line.split("\t") : line.split(",");
+        if (cols.length < 2) continue;
+        const carNo = (cols[0] || "").trim();
+        if (!carNo || carNo === "カーナンバー") continue;
+        const team = (cols[2] || "未所属").trim() || "未所属";
+        parsed.push({
+          carNo,
+          machine: (cols[1] || "マシン未定").trim(),
+          team,
+          name: (cols[3] || "参加者未定").trim(),
+          racePoints: 0,
+          designPoints: 0
+        });
+        if (!(team in appState.entrants)) appState.entrants[team] = 1;
+      }
+      if (parsed.length === 0) {
+        showToast("有効な名簿行が見つかりませんでした");
+        return;
+      }
+      if (replaceAll) {
+        appState.participants = parsed;
+        appState.teamLeaderBonus = {};
+        appState.history = [];
+        const activeTeams = new Set(parsed.map(p => p.team));
+        const nextEnt = {};
+        for (const t of activeTeams) nextEnt[t] = appState.entrants[t] ?? 1;
+        appState.entrants = nextEnt;
+      } else {
+        const map = new Map(appState.participants.map(p => [p.carNo, { ...p }]));
+        for (const item of parsed) {
+          const prev = map.get(item.carNo);
+          map.set(item.carNo, {
+            ...item,
+            racePoints: prev ? Number(prev.racePoints) || 0 : 0,
+            designPoints: prev ? Number(prev.designPoints) || 0 : 0
+          });
+        }
+        appState.participants = Array.from(map.values());
+      }
+      renderAll();
+      pushToCloud();
+      showToast(`${parsed.length} 台の名簿を取り込みました`);
+    }
+
+    function renderEntrantsEditor() {
+      const grid = document.getElementById("entrantsGrid");
+      if (!grid) return;
+      const teams = Array.from(new Set([...Object.keys(appState.entrants || {}), ...appState.participants.map(p => p.team)]));
+      grid.innerHTML = teams.map(team => {
+        const val = Number(appState.entrants[team] ?? 1);
+        const safeId = "ent_" + encodeURIComponent(team).replace(/%/g, "_");
+        return `<div><label for="${safeId}">${escapeHtml(team)}</label><input type="number" min="0" max="999" id="${safeId}" data-team="${escapeHtml(team)}" value="${val}" /></div>`;
+      }).join("");
+    }
+
+    function saveEntrants() {
+      const grid = document.getElementById("entrantsGrid");
+      if (!grid) return;
+      grid.querySelectorAll("input[data-team]").forEach(inp => {
+        const team = inp.getAttribute("data-team");
+        const num = parseInt(inp.value, 10);
+        if (team) appState.entrants[team] = Number.isFinite(num) && num >= 0 ? num : 0;
+      });
+      renderAll();
+      pushToCloud();
+      showToast("出走人数を保存しました");
+    }
+
+    function getSortedParticipants() {
+      return [...appState.participants].sort((a, b) =>
+        (getTotalPoints(b) - getTotalPoints(a)) || String(a.carNo).localeCompare(String(b.carNo), "ja")
+      );
+    }
+
+    function renderTopShowcase() {
+      const box = document.getElementById("topThreeShowcase");
+      const leadersBox = document.getElementById("topLeadersCards");
+      const sorted = getSortedParticipants();
+      const medals = ["🥇", "🥈", "🥉"];
+
+      if (box) {
+        box.innerHTML = [0, 1, 2].map(idx => {
+          const p = sorted[idx];
+          if (!p) {
+            return `<div class="podium-card rank-${idx + 1}"><div class="podium-medal">${medals[idx]}</div><div class="podium-name">集計中...</div><div class="podium-score">- pt</div></div>`;
+          }
+          return `
+            <div class="podium-card rank-${idx + 1}">
+              <div class="kid-left">
+                <div class="podium-medal">${medals[idx]}</div>
+                <div>
+                  <div class="podium-name">${escapeHtml(p.name)}</div>
+                  <div class="podium-meta">${escapeHtml(p.machine)} / ${escapeHtml(p.team)}</div>
+                </div>
+              </div>
+              <div class="podium-score">${getTotalPoints(p)} pt</div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      const divSorted = sorted.filter(p => matchesDivision(p, selectedDivision));
+      if (leadersBox) {
+        leadersBox.innerHTML = divSorted.slice(0, 6).map((p, idx) => {
+          const badgeCls = idx === 0 ? "top1" : idx === 1 ? "top2" : idx === 2 ? "top3" : "";
+          return `
+            <div class="kid-rank-row">
+              <div class="kid-left">
+                <span class="rank-num-badge ${badgeCls}">${idx + 1}</span>
+                <div>
+                  <div class="kid-name-main">${escapeHtml(p.name)}</div>
+                  <div class="col-sub-info">${escapeHtml(p.machine)}（${escapeHtml(p.carNo)}）</div>
+                </div>
+              </div>
+              <div class="kid-score-main">${getTotalPoints(p)} pt</div>
+            </div>
+          `;
+        }).join("");
+      }
+    }
+
+    function renderIndividualTable() {
+      const tbody = document.getElementById("individualTableBody");
+      const badge = document.getElementById("entryCountBadge");
+      if (!tbody) return;
+      const selectedTeam = document.getElementById("filterTeam")?.value || "";
+      const kw = (document.getElementById("filterKeyword")?.value || "").trim().toLowerCase();
+
+      const sorted = getSortedParticipants();
+      const rankMap = new Map(sorted.map((p, idx) => [p.carNo, idx + 1]));
+      const filtered = sorted.filter(p =>
+        matchesDivision(p, selectedDivision) &&
+        (!selectedTeam || p.team === selectedTeam) &&
+        (!kw || `${p.name} ${p.machine} ${p.carNo} ${p.team}`.toLowerCase().includes(kw))
+      );
+
+      if (badge) {
+        const prefix = selectedDivision ? `${selectedDivision} ` : "";
+        badge.textContent = `${prefix}表示 ${filtered.length} 台`;
+      }
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#64748b; padding:20px;">該当するマシン・メンバーがありません</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(p => `
+        <tr>
+          <td class="col-name-first">${escapeHtml(p.name)}</td>
+          <td class="col-score-second">${getTotalPoints(p)} pt</td>
+          <td><strong>${rankMap.get(p.carNo)}位</strong></td>
+          <td>${escapeHtml(p.machine)}</td>
+          <td class="col-sub-info">${escapeHtml(p.carNo)}</td>
+          <td class="col-sub-info">${escapeHtml(p.team)}</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderTeamTable() {
+      const tbody = document.getElementById("teamTableBody");
+      if (!tbody) return;
+
+      const racePtMap = new Map();
+      const designPtMap = new Map();
+      const allTeams = new Set([
+        ...Object.keys(appState.entrants || {}),
+        ...Object.keys(appState.teamLeaderBonus || {}),
+        ...appState.participants.map(p => p.team)
+      ]);
+
+      for (const t of allTeams) {
+        racePtMap.set(t, 0);
+        designPtMap.set(t, 0);
+      }
+      for (const p of appState.participants) {
+        racePtMap.set(p.team, (racePtMap.get(p.team) || 0) + (Number(p.racePoints) || 0));
+        designPtMap.set(p.team, (designPtMap.get(p.team) || 0) + (Number(p.designPoints) || 0));
+      }
+
+      const rows = Array.from(allTeams).map(team => {
+        const racePt = racePtMap.get(team) || 0;
+        const designPt = designPtMap.get(team) || 0;
+        const leaderPt = Number(appState.teamLeaderBonus?.[team] ?? 0);
+        const totalPt = racePt + designPt + leaderPt;
+        const entrantsCount = Number(appState.entrants[team] ?? 0);
+        const avgPt = entrantsCount > 0 ? totalPt / entrantsCount : 0;
+        return { team, racePt, designPt, leaderPt, entrantsCount, avgPt };
+      }).sort((a, b) => (b.avgPt - a.avgPt) || ((b.racePt + b.designPt + b.leaderPt) - (a.racePt + a.designPt + a.leaderPt)));
+
+      if (rows.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#64748b; padding:20px;">チームデータがありません</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = rows.map((r, idx) => `
+        <tr>
+          <td class="col-name-first">${escapeHtml(r.team)}</td>
+          <td class="col-score-second">${r.avgPt.toFixed(2)} pt</td>
+          <td><strong>${idx + 1}位</strong></td>
+          <td>${r.racePt} pt</td>
+          <td>${r.designPt} pt</td>
+          <td>${r.leaderPt} pt</td>
+          <td class="col-sub-info">${r.entrantsCount} 人</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderSelectOptions() {
+      const sortedCars = [...appState.participants].sort((a, b) => String(a.carNo).localeCompare(String(b.carNo), "ja"));
+      const rankFilteredCars = sortedCars.filter(p => matchesDivision(p, selectedInputDivision));
+      const rankOpts = `<option value="">-- 選択なし --</option>` + rankFilteredCars.map(p =>
+        `<option value="${escapeHtml(p.carNo)}">${escapeHtml(p.carNo)}（${escapeHtml(p.name)} / ${escapeHtml(p.machine)}）</option>`
+      ).join("");
+
+      ["rank1Select", "rank2Select", "rank3Select", "rank4Select"].forEach(id => {
+        const sel = document.getElementById(id);
+        if (!sel) return;
+        const cur = sel.value;
+        sel.innerHTML = rankOpts;
+        if (cur && rankFilteredCars.some(c => c.carNo === cur)) sel.value = cur;
+      });
+
+      const allCarOpts = `<option value="">-- 選択なし --</option>` + sortedCars.map(p =>
+        `<option value="${escapeHtml(p.carNo)}">${escapeHtml(p.carNo)}（${escapeHtml(p.name)} / ${escapeHtml(p.machine)}）</option>`
+      ).join("");
+      const designSel = document.getElementById("designCarSelect");
+      if (designSel) {
+        const curD = designSel.value;
+        designSel.innerHTML = allCarOpts;
+        if (curD) designSel.value = curD;
+      }
+
+      const teams = Array.from(new Set([...Object.keys(appState.entrants || {}), ...appState.participants.map(p => p.team)]));
+      const teamSel = document.getElementById("leaderTeamSelect");
+      if (teamSel) {
+        const curT = teamSel.value;
+        teamSel.innerHTML = teams.map(t => `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join("");
+        if (curT) teamSel.value = curT;
+      }
+
+      const filterTeam = document.getElementById("filterTeam");
+      if (filterTeam) {
+        const curF = filterTeam.value;
+        filterTeam.innerHTML = `<option value="">すべてのチーム</option>` + teams.map(t => `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join("");
+        if (curF) filterTeam.value = curF;
+      }
+    }
+
+    function renderHistory() {
+      const box = document.getElementById("raceHistoryList");
+      if (!box) return;
+      if (!appState.history || appState.history.length === 0) {
+        box.innerHTML = `<div class="hint">まだレース・表彰の記録はありません。</div>`;
+        return;
+      }
+      box.innerHTML = appState.history.map(h => `
+        <div class="history-card">
+          <div class="history-top">
+            <span>${escapeHtml(h.title || h.race || "")}</span>
+            <span class="pill-tag">${escapeHtml(h.kind || "記録")} · ${escapeHtml(h.timeText || "")}</span>
+          </div>
+          <div class="history-ranks">${escapeHtml(h.detail || "")}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderAll() {
+      renderTopShowcase();
+      renderSelectOptions();
+      renderIndividualTable();
+      renderTeamTable();
+      renderEntrantsEditor();
+      renderHistory();
+    }
+
+    function openFirebaseModal() {
+      document.getElementById("fbUrlInput").value = getFbUrl();
+      document.getElementById("fbRoomInput").value = getFbRoom();
+      document.getElementById("firebaseModal").classList.add("open");
+    }
+    function closeFirebaseModal() {
+      document.getElementById("firebaseModal").classList.remove("open");
+    }
+    function saveFirebaseConfig() {
+      const newUrl = (document.getElementById("fbUrlInput")?.value || "").trim().replace(/\/+$/, "");
+      const newRoom = (document.getElementById("fbRoomInput")?.value || "").trim() || DEFAULT_FB_ROOM;
+      if (!newUrl) return;
+      localStorage.setItem(STORAGE_FB_URL, newUrl);
+      localStorage.setItem(STORAGE_FB_ROOM, newRoom);
+      closeFirebaseModal();
+      pushToCloud();
+      showToast("接続設定を保存しました");
+    }
+
+    function copyShareUrl() {
+      const shareUrl = `${window.location.origin}${window.location.pathname}?room=${encodeURIComponent(getFbRoom())}&fbUrl=${encodeURIComponent(getFbUrl())}`;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(shareUrl).then(() => showToast("共有リンクをコピーしました")).catch(() => prompt("共有リンク：", shareUrl));
+      } else {
+        prompt("共有リンク：", shareUrl);
+      }
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      try {
+        loadLocalState();
+        updateRacePreview();
+        renderAll();
+        startSyncLoop();
+      } catch (err) {
+        console.error(err);
+      }
+    });
+  </script>
+</body>
+</html>
