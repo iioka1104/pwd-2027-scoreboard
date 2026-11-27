@@ -415,7 +415,8 @@
     function parseCsv(text) {
       const lines = String(text || "")
         .replace(/^﻿/, "")
-        .split(/?
+        .split(/
+?
 /)
         .map((l) => l.trim())
         .filter(Boolean);
