@@ -2865,7 +2865,8 @@
       }
       const parsedScouts = [];
       const parsedLeaders = [];
-      for (const line of rawText.split(/?
+      for (const line of rawText.split(/
+?
 /).map(l => l.trim()).filter(Boolean)) {
         const cols = line.includes("	") ? line.split("	") : line.split(",");
         if (cols.length < 2) continue;
