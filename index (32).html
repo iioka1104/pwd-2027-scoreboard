@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2027奈良パインウッドダービー大会速報ボード | リアルタイム速報&amp;イベントボード</title>
+  <style>
+    :root {
+      --bg-page: #fdf4ff;
+      --bg-grad: linear-gradient(155deg, #fff1f2 0%, #fdf4ff 45%, #eef2ff 100%);
+      --bg-card: #ffffff;
+      --text-main: #1e1b4b;
+      --text-muted: #64748b;
+      --accent: #7c3aed;
+      --accent-2: #ec4899;
+      --gold: #f59e0b;
+      --border: #e9d5ff;
+      --shadow: 0 10px 28px rgba(109, 40, 217, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+      background: var(--bg-grad);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    /* プロジェクター投影モード */
+    body.projector-mode {
+      --bg-page: #0b1020;
+      --bg-grad: radial-gradient(circle at top, #1e1b4b 0%, #0b1020 65%);
+      --bg-card: rgba(15, 23, 42, 0.92);
+      --text-main: #f8fafc;
+      --text-muted: #cbd5e1;
+      --border: rgba(148, 163, 184, 0.25);
+      --shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
+    }
+
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 18px 16px 64px;
+    }
+
+    /* ヘッダー */
+    .hero {
+      background: linear-gradient(120deg, #6d28d9 0%, #db2777 55%, #4f46e5 100%);
+      color: #fff;
+      border-radius: 22px;
+      padding: 20px 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+    }
+
+    .hero-top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hero-title-group {
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      margin-bottom: 6px;
+      white-space: nowrap;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(1.12rem, 2.3vw, 2.0rem);
+      font-weight: 900;
+      letter-spacing: 0.01em;
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 10px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: transform 0.12s ease, opacity 0.15s ease, box-shadow 0.15s ease;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn:hover { transform: translateY(-1px); opacity: 0.96; }
+    .btn:active { transform: translateY(0); }
+
+    .btn-cheer {
+      background: #fff1f2;
+      color: #be123c;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16);
+    }
+
+    .btn-mode {
+      background: rgba(15, 23, 42, 0.82);
+      color: #fff;
+      border: 1.5px solid rgba(255, 255, 255, 0.45);
+    }
+
+    body.projector-mode .btn-mode {
+      background: #fef08a;
+      color: #1e1b4b;
+      border-color: #fef08a;
+    }
+
+    .live-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      background: rgba(15, 23, 42, 0.55);
+      color: #fff;
+      padding: 5px 11px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 8px #22c55e;
+      animation: pulse 1.6s infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.45; transform: scale(1.25); }
+    }
+
+    /* アナウンスティッカー */
+    .ticker-wrap {
+      margin-top: 14px;
+      background: rgba(255, 255, 255, 0.94);
+      color: #1e1b4b;
+      border-radius: 14px;
+      padding: 9px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      overflow: hidden;
+      border: 2px solid #fde047;
+    }
+
+    .ticker-badge {
+      background: #f59e0b;
+      color: #fff;
+      font-weight: 900;
+      font-size: 0.76rem;
+      padding: 3px 9px;
+      border-radius: 999px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .ticker-text {
+      font-weight: 800;
+      font-size: 0.92rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* 応援メッセージバナー */
+    .cheer-banner {
+      background: var(--bg-card);
+      border: 2px solid #f472b6;
+      border-radius: 20px;
+      padding: 16px 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cheer-banner-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+
+    .cheer-tag {
+      background: linear-gradient(90deg, #ec4899, #8b5cf6);
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 3px 11px;
+      border-radius: 999px;
+    }
+
+    .cheer-queue-info {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #be185d;
+      background: #fdf2f8;
+      padding: 2px 10px;
+      border-radius: 999px;
+    }
+
+    body.projector-mode .cheer-queue-info {
+      background: rgba(244, 114, 182, 0.2);
+      color: #fbcfe8;
+    }
+
+    .cheer-quote {
+      font-size: clamp(1.05rem, 2.2vw, 1.55rem);
+      font-weight: 900;
+      line-height: 1.45;
+      margin: 4px 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .cheer-meta {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .cheer-progress-track {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 4px;
+      background: rgba(236, 72, 153, 0.15);
+    }
+
+    .cheer-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ec4899, #8b5cf6, #f59e0b);
+      transition: width 0.1s linear;
+    }
+
+    /* プロジェクター用ナビ */
+    .projector-nav {
+      display: none;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 12px 16px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    body.projector-mode .projector-nav { display: block; }
+
+    .p-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .p-tab {
+      border: 1.5px solid var(--border);
+      background: transparent;
+      color: var(--text-main);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.88rem;
+      cursor: pointer;
+    }
+
+    .p-tab.active {
+      background: #facc15;
+      color: #1e1b4b;
+      border-color: #facc15;
+    }
+
+    .p-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.86rem;
+    }
+
+    .p-btn {
+      border: 1px solid var(--border);
+      background: rgba(148, 163, 184, 0.16);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .p-btn.primary {
+      background: #f59e0b;
+      color: #fff;
+      border-color: #f59e0b;
+    }
+
+    body.projector-mode .section-card { display: none; }
+    body.projector-mode .section-card.p-active { display: block; }
+
+    /* レイアウトグリッド */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    @media (max-width: 900px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .section-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 18px 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 0 0 14px;
+      font-size: 1.15rem;
+      font-weight: 900;
+    }
+
+    .section-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* ランキングカード */
+    .rank-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .rank-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(139, 92, 246, 0.06);
+      border: 1px solid var(--border);
+    }
+
+    .rank-item.top-1 {
+      background: linear-gradient(90deg, rgba(250, 204, 21, 0.22), rgba(251, 146, 60, 0.12));
+      border-color: #f59e0b;
+    }
+
+    .rank-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .medal {
+      font-size: 1.35rem;
+      width: 32px;
+      text-align: center;
+      flex-shrink: 0;
+      font-weight: 900;
+    }
+
+    .racer-name {
+      font-weight: 900;
+      font-size: 1.02rem;
+    }
+
+    .racer-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .pts-badge {
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: #7c3aed;
+      white-space: nowrap;
+    }
+
+    body.projector-mode .pts-badge { color: #fde047; }
+
+    /* テーブル */
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      padding: 9px 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    th {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 800;
+    }
+
+    .chip {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      background: rgba(124, 58, 237, 0.12);
+      color: #6d28d9;
+    }
+
+    body.projector-mode .chip {
+      background: rgba(167, 139, 250, 0.22);
+      color: #ddd6fe;
+    }
+
+    /* タイムライン */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tl-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(148, 163, 184, 0.08);
+    }
+
+    .tl-time {
+      font-weight: 900;
+      font-size: 0.85rem;
+      color: #db2777;
+      min-width: 52px;
+    }
+
+    body.projector-mode .tl-time { color: #f9a8d4; }
+
+    .tl-title { font-weight: 800; font-size: 0.92rem; }
+    .tl-desc { font-size: 0.8rem; color: var(--text-muted); }
+
+    /* 応援ウォール */
+    .cheer-wall {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 12px;
+    }
+
+    .cheer-card {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      background: rgba(244, 114, 182, 0.06);
+    }
+
+    .cheer-card-to {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #be185d;
+      margin-bottom: 4px;
+    }
+
+    body.projector-mode .cheer-card-to { color: #f9a8d4; }
+
+    .cheer-card-msg {
+      font-weight: 700;
+      font-size: 0.92rem;
+      margin-bottom: 6px;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
+    .cheer-card-from {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      text-align: right;
+    }
+
+    /* 応援投稿モーダル */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1000;
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .modal-card {
+      width: 100%;
+      max-width: 460px;
+      background: #fff;
+      color: #1e1b4b;
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    .modal-card h2 {
+      margin: 0 0 6px;
+      font-size: 1.25rem;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 9px 11px;
+      border-radius: 10px;
+      border: 1.5px solid #cbd5e1;
+      font-size: 0.92rem;
+      font-family: inherit;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #1e1b4b;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.88rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 2000;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ヒーロー右側のエンブレム群 */
+    .hero-emblems {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .hero-emblem {
+      height: 44px;
+      width: auto;
+      object-fit: contain;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.92);
+      padding: 3px 6px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .hero-emblem--circle {
+      width: 44px;
+      height: 44px;
+      padding: 2px;
+      border-radius: 50%;
+    }
+
+    .hero-status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    /* スマホ向け調整（通常モード・プロジェクターモード共通で一行表示＆見出し全文表示） */
+    @media (max-width: 640px) {
+      .container {
+        padding: 10px 10px 56px;
+      }
+
+      .hero {
+        padding: 14px 14px;
+        border-radius: 18px;
+        margin-bottom: 14px;
+      }
+
+      .hero-top {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+
+      .hero-badge {
+        font-size: 0.72rem;
+        padding: 3px 10px;
+        margin-bottom: 5px;
+      }
+
+      .hero h1 {
+        font-size: 1.05rem;
+        letter-spacing: -0.01em;
+        line-height: 1.3;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+      }
+
+      .hero-actions {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 7px;
+      }
+
+      .hero-actions .btn {
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 8px 8px;
+        font-size: 0.74rem;
+        gap: 4px;
+        letter-spacing: -0.02em;
+      }
+
+      .hero-status-row {
+        margin-top: 8px;
+        gap: 8px;
+      }
+
+      .live-pill {
+        font-size: 0.74rem;
+        padding: 4px 9px;
+      }
+
+      .hero-emblem {
+        height: 36px;
+      }
+
+      .hero-emblem--circle {
+        width: 36px;
+        height: 36px;
+      }
+
+      .ticker-wrap {
+        margin-top: 10px;
+        padding: 7px 10px;
+        gap: 7px;
+      }
+
+      .ticker-badge {
+        font-size: 0.7rem;
+        padding: 2px 7px;
+      }
+
+      .ticker-text {
+        font-size: 0.8rem;
+      }
+    }
+
+    @media (max-width: 390px) {
+      .hero h1 {
+        font-size: 0.96rem;
+      }
+
+      .hero-actions .btn {
+        padding: 8px 6px;
+        font-size: 0.69rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- ヘッダー -->
+    <header class="hero">
+      <div class="hero-top">
+        <div class="hero-title-group">
+          <div class="hero-badge">🏁 2027奈良パインウッドダービー大会速報ボード</div>
+          <h1>みんなで応援📣パインウッドダービー！🏆</h1>
+        </div>
+        <div class="hero-actions">
+          <button type="button" class="btn btn-cheer" id="openCheerBtn">💌 応援メッセージ送る</button>
+          <button type="button" class="btn btn-mode" id="toggleModeBtn">🖥️ プロジェクター投影モード</button>
+        </div>
+      </div>
+
+      <div class="hero-status-row">
+        <div class="live-pill">
+          <span class="live-dot"></span>
+          <span id="syncStatusText">リアルタイム同期中</span>
+        </div>
+        <div class="hero-emblems" aria-label="大会ロゴ・奈良連盟バッジ">
+          <img src="nara-council-badge.png" alt="ボーイスカウト日本連盟 奈良県連盟" class="hero-emblem hero-emblem--circle" />
+          <img src="pwd-2027-logo.png" alt="2027 奈良パインウッドダービー ロゴ" class="hero-emblem" />
+        </div>
+      </div>
+
+      <div class="ticker-wrap">
+        <span class="ticker-badge">大会アナウンス</span>
+        <div class="ticker-text" id="tickerText">📣 大会盛り上がりをリアルタイムで、こちらからお届けします！</div>
+      </div>
+    </header>
+
+    <!-- 応援メッセージハイライトバナー -->
+    <section class="cheer-banner" aria-label="最新の応援メッセージ">
+      <div class="cheer-banner-top">
+        <span class="cheer-tag">💌 みんなの応援メッセージ</span>
+        <span class="cheer-queue-info" id="cheerQueueInfo">待機: 0件</span>
+      </div>
+      <div class="cheer-quote" id="bannerQuote">「みんなの応援メッセージがここに届きます！」</div>
+      <div class="cheer-meta" id="bannerMeta">応援メッセージを送って大会を盛り上げよう！</div>
+      <div class="cheer-progress-track">
+        <div class="cheer-progress-bar" id="cheerProgressBar"></div>
+      </div>
+    </section>
+
+    <!-- プロジェクター投影モード用コントローラー -->
+    <nav class="projector-nav" id="projectorNav" aria-label="プロジェクター表示切り替え">
+      <div class="p-tabs" id="projectorTabs">
+        <button type="button" class="p-tab active" data-target="sec-overview">① 表紙（レースの流れ）</button>
+        <button type="button" class="p-tab" data-target="sec-individual">② 🏆 個人スコア順位（総合TOP10）</button>
+        <button type="button" class="p-tab" data-target="sec-team">③ 🚩 チーム対抗スコア順位</button>
+        <button type="button" class="p-tab" data-target="sec-races">④ 🏎️ 直近レース結果（最新10件）</button>
+        <button type="button" class="p-tab" data-target="sec-cheers">⑤ 💌 応援メッセージ一覧</button>
+        <button type="button" class="p-tab" data-target="sec-schedule">⑥ 🗓️ 当日のタイムスケジュール</button>
+      </div>
+      <div class="p-controls">
+        <button type="button" class="p-btn" id="prevSlideBtn">◀ 前へ</button>
+        <button type="button" class="p-btn primary" id="toggleAutoBtn">⏸ 自動送り中</button>
+        <button type="button" class="p-btn" id="nextSlideBtn">次へ ▶</button>
+        <label>
+          切替間隔:
+          <select id="slideIntervalSelect" class="p-btn">
+            <option value="5000">5秒</option>
+            <option value="8000" selected>8秒</option>
+            <option value="12000">12秒</option>
+            <option value="20000">20秒</option>
+          </select>
+        </label>
+        <span id="countdownText" class="section-sub">次の画面まで --秒</span>
+      </div>
+    </nav>
+
+    <!-- 表紙（レースの流れ） -->
+    <section class="section-card p-active" id="sec-overview">
+      <h2 class="section-title">
+        <span>🏁 表紙（レースの流れ・大会サマリー）</span>
+        <span class="section-sub" id="lastUpdatedLabel">最終更新: --:--:--</span>
+      </h2>
+      <div class="grid-2" style="margin-bottom: 0;">
+        <div>
+          <h3 style="margin: 0 0 10px; font-size: 1rem;">🏆 ただいまの上位優秀者（総合スコア TOP3）</h3>
+          <div id="overviewTop3" class="rank-list"></div>
+        </div>
+        <div>
+          <h3 style="margin: 0 0 10px; font-size: 1rem;">⚡ 最新レースハイライト</h3>
+          <div id="overviewLatestRaces" class="timeline"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 個人スコア順位＆チーム対抗スコア順位 -->
+    <div class="grid-2">
+      <section class="section-card" id="sec-individual">
+        <h2 class="section-title">
+          <span>🏆 個人スコア順位（総合TOP10）</span>
+          <span class="section-sub">レースpt + デザイン賞pt</span>
+        </h2>
+        <div id="individualRanking" class="rank-list"></div>
+      </section>
+
+      <section class="section-card" id="sec-team">
+        <h2 class="section-title">
+          <span>🚩 チーム対抗スコア順位</span>
+          <span class="section-sub">所属隊・組ごとの合計pt</span>
+        </h2>
+        <div id="teamRanking" class="rank-list"></div>
+      </section>
+    </div>
+
+    <!-- 直近レース結果 -->
+    <section class="section-card" id="sec-races">
+      <h2 class="section-title">
+        <span>🏎️ 直近レース結果（最新10件）</span>
+        <span class="section-sub">ヒート・レーン・タイム・獲得pt</span>
+      </h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>時刻</th>
+              <th>ヒート / 部門</th>
+              <th>レーン</th>
+              <th>レーサー名</th>
+              <th>所属</th>
+              <th>タイム</th>
+              <th>獲得pt</th>
+            </tr>
+          </thead>
+          <tbody id="recentRacesBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 応援メッセージ一覧 -->
+    <section class="section-card" id="sec-cheers">
+      <h2 class="section-title">
+        <span>💌 応援メッセージ一覧</span>
+        <span class="section-sub">届いた応援がリアルタイムで並びます</span>
+      </h2>
+      <div id="cheerWall" class="cheer-wall"></div>
+    </section>
+
+    <!-- 当日のタイムスケジュール -->
+    <section class="section-card" id="sec-schedule">
+      <h2 class="section-title">
+        <span>🗓️ 当日のタイムスケジュール</span>
+        <span class="section-sub">進行状況に合わせてご確認ください</span>
+      </h2>
+      <div id="scheduleList" class="timeline"></div>
+    </section>
+  </div>
+
+  <!-- 応援メッセージ送信モーダル -->
+  <div class="modal-backdrop" id="cheerModal" role="dialog" aria-modal="true" aria-labelledby="cheerModalTitle">
+    <div class="modal-card">
+      <h2 id="cheerModalTitle">💌 応援メッセージを送る</h2>
+      <p style="margin: 0 0 14px; font-size: 0.85rem; color: #64748b;">
+        送ったメッセージは速報ボードやプロジェクター画面に表示されます！
+      </p>
+      <form id="cheerForm">
+        <div class="form-group">
+          <label for="cheerTo">応援するレーサー・チーム（任意）</label>
+          <input type="text" id="cheerTo" maxlength="40" placeholder="例: 翔くん、磯城1団のみんな" />
+        </div>
+        <div class="form-group">
+          <label for="cheerFrom">あなたのニックネーム（任意）</label>
+          <input type="text" id="cheerFrom" maxlength="30" placeholder="例: パパ・ママ、おばあちゃん" />
+        </div>
+        <div class="form-group">
+          <label for="cheerMsg">応援メッセージ（必須・120文字以内）</label>
+          <textarea id="cheerMsg" rows="3" maxlength="120" required placeholder="例: 最後まで全力で駆け抜けろー！がんばれ！"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn" style="background:#e2e8f0; color:#1e293b;" id="cancelCheerBtn">キャンセル</button>
+          <button type="submit" class="btn" style="background:#db2777; color:#fff;" id="submitCheerBtn">送信する 🚀</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getDatabase, ref, onValue, push, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const firebaseConfig = {
+      databaseURL: "https://pwd-2027-nara-default-rtdb.firebaseio.com/"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const DEFAULT_SCHEDULE = [
+      { time: "09:00", title: "受付・車検・デザイン審査エントリー", desc: "マシン重量・車輪チェックとデザインアピール" },
+      { time: "10:00", title: "開会式・ルール説明・試走", desc: "コース確認とスタートテスト" },
+      { time: "10:30", title: "予選ヒート（第1〜第2ラウンド）", desc: "各レーンを走行してタイム＆ポイントを計測" },
+      { time: "12:00", title: "お昼休憩・フリー走行＆応援タイム", desc: "応援メッセージ送信受付中" },
+      { time: "13:15", title: "決勝トーナメント・デザイン賞発表", desc: "上位進出マシンによる白熱の決勝レース" },
+      { time: "14:45", title: "表彰式・閉会式", desc: "総合優勝・各賞・チーム対抗表彰" }
+    ];
+
+    const SAMPLE_RACERS = [
+      { id: "r1", name: "翔", team: "生駒2団 カブ隊", racePts: 14, designPts: 3 },
+      { id: "r2", name: "蓮", team: "磯城1団 カブ隊", racePts: 12, designPts: 4 },
+      { id: "r3", name: "陽葵", team: "橿原1団 カブ隊", racePts: 11, designPts: 2 },
+      { id: "r4", name: "湊", team: "生駒2団 カブ隊", racePts: 9, designPts: 3 },
+      { id: "r5", name: "結菜", team: "桜井1団 カブ隊", racePts: 8, designPts: 4 }
+    ];
+
+    const SAMPLE_RACES = [
+      { time: "10:42", heat: "予選H1", lane: 1, racerName: "翔", team: "生駒2団 カブ隊", finishTime: "2.841s", pts: 5 },
+      { time: "10:42", heat: "予選H1", lane: 2, racerName: "蓮", team: "磯城1団 カブ隊", finishTime: "2.912s", pts: 3 },
+      { time: "10:45", heat: "予選H2", lane: 1, racerName: "陽葵", team: "橿原1団 カブ隊", finishTime: "2.955s", pts: 5 },
+      { time: "10:45", heat: "予選H2", lane: 3, racerName: "湊", team: "生駒2団 カブ隊", finishTime: "3.018s", pts: 2 }
+    ];
+
+    const SAMPLE_CHEERS = [
+      { id: "c1", to: "全レーサー", from: "大会実行委員会", msg: "2027奈良パインウッドダービー開幕！安全に楽しく走り切ろう！", createdAt: Date.now() - 120000 },
+      { id: "c2", to: "磯城1団のみんな", from: "応援団", msg: "練習の成果を出せ〜！ゴールまで一直線！", createdAt: Date.now() - 60000 }
+    ];
+
+    let state = {
+      announcement: "📣 大会盛り上がりをリアルタイムで、こちらからお届けします！",
+      racers: SAMPLE_RACERS,
+      races: SAMPLE_RACES,
+      cheers: SAMPLE_CHEERS,
+      schedule: DEFAULT_SCHEDULE
+    };
+
+    const $ = (id) => document.getElementById(id);
+
+    function showToast(text) {
+      const el = $("toast");
+      el.textContent = text;
+      el.classList.add("show");
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => el.classList.remove("show"), 2400);
+    }
+
+    function escapeHtml(str = "") {
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function formatTime(ts) {
+      if (!ts) return "";
+      const d = new Date(Number(ts));
+      if (Number.isNaN(d.getTime())) return "";
+      return d.toTimeString().slice(0, 5);
+    }
+
+    function updateTimestamp() {
+      const now = new Date();
+      $("lastUpdatedLabel").textContent = "最終更新: " + now.toTimeString().slice(0, 8);
+    }
+
+    function computeStandings() {
+      const racerMap = new Map();
+      (state.racers || []).forEach((r, idx) => {
+        const key = r.id || `${r.name}_${idx}`;
+        const racePts = Number(r.racePts ?? r.points ?? 0) || 0;
+        const designPts = Number(r.designPts ?? 0) || 0;
+        racerMap.set(key, {
+          name: r.name || "レーサー",
+          team: r.team || "所属未設定",
+          racePts,
+          designPts,
+          totalPts: racePts + designPts
+        });
+      });
+
+      const individuals = Array.from(racerMap.values()).sort((a, b) => b.totalPts - a.totalPts);
+
+      const teamMap = new Map();
+      individuals.forEach((person) => {
+        const t = person.team || "所属未設定";
+        const cur = teamMap.get(t) || { team: t, totalPts: 0, members: 0 };
+        cur.totalPts += person.totalPts;
+        cur.members += 1;
+        teamMap.set(t, cur);
+      });
+
+      const teams = Array.from(teamMap.values()).sort((a, b) => b.totalPts - a.totalPts);
+      return { individuals, teams };
+    }
+
+    function renderAll() {
+      $("tickerText").textContent = state.announcement || "📣 大会盛り上がりをリアルタイムで、こちらからお届けします！";
+
+      const { individuals, teams } = computeStandings();
+      const medals = ["🥇", "🥈", "🥉"];
+
+      const top3 = individuals.slice(0, 3);
+      $("overviewTop3").innerHTML = top3.length
+        ? top3.map((p, i) => `
+            <div class="rank-item ${i === 0 ? "top-1" : ""}">
+              <div class="rank-left">
+                <span class="medal">${medals[i] || (i + 1)}</span>
+                <div>
+                  <div class="racer-name">${escapeHtml(p.name)}</div>
+                  <div class="racer-sub">${escapeHtml(p.team)}</div>
+                </div>
+              </div>
+              <div class="pts-badge">${p.totalPts} pt</div>
+            </div>
+          `).join("")
+        : `<div class="racer-sub">スコア集計待ちです</div>`;
+
+      const latest3 = (state.races || []).slice(0, 3);
+      $("overviewLatestRaces").innerHTML = latest3.length
+        ? latest3.map((rc) => `
+            <div class="tl-item">
+              <div class="tl-time">${escapeHtml(rc.time || "--:--")}</div>
+              <div>
+                <div class="tl-title">${escapeHtml(rc.heat || "ヒート")} / レーン${escapeHtml(rc.lane ?? "-")}：${escapeHtml(rc.racerName || "")}（+${Number(rc.pts || 0)}pt）</div>
+                <div class="tl-desc">${escapeHtml(rc.team || "")} ${rc.finishTime ? "・タイム " + escapeHtml(rc.finishTime) : ""}</div>
+              </div>
+            </div>
+          `).join("")
+        : `<div class="racer-sub">まだレース結果がありません</div>`;
+
+      const top10 = individuals.slice(0, 10);
+      $("individualRanking").innerHTML = top10.length
+        ? top10.map((p, i) => `
+            <div class="rank-item ${i === 0 ? "top-1" : ""}">
+              <div class="rank-left">
+                <span class="medal">${medals[i] || (i + 1)}</span>
+                <div>
+                  <div class="racer-name">${escapeHtml(p.name)}</div>
+                  <div class="racer-sub">${escapeHtml(p.team)}（レース ${p.racePts} / デザイン ${p.designPts}）</div>
+                </div>
+              </div>
+              <div class="pts-badge">${p.totalPts} pt</div>
+            </div>
+          `).join("")
+        : `<div class="racer-sub">データがありません</div>`;
+
+      $("teamRanking").innerHTML = teams.length
+        ? teams.map((t, i) => `
+            <div class="rank-item ${i === 0 ? "top-1" : ""}">
+              <div class="rank-left">
+                <span class="medal">${medals[i] || (i + 1)}</span>
+                <div>
+                  <div class="racer-name">${escapeHtml(t.team)}</div>
+                  <div class="racer-sub">エントリー ${t.members}名</div>
+                </div>
+              </div>
+              <div class="pts-badge">${t.totalPts} pt</div>
+            </div>
+          `).join("")
+        : `<div class="racer-sub">チームデータがありません</div>`;
+
+      const recent10 = (state.races || []).slice(0, 10);
+      $("recentRacesBody").innerHTML = recent10.length
+        ? recent10.map((rc) => `
+            <tr>
+              <td>${escapeHtml(rc.time || "--:--")}</td>
+              <td><span class="chip">${escapeHtml(rc.heat || "-")}</span></td>
+              <td>${escapeHtml(rc.lane ?? "-")}</td>
+              <td><strong>${escapeHtml(rc.racerName || "-")}</strong></td>
+              <td>${escapeHtml(rc.team || "-")}</td>
+              <td>${escapeHtml(rc.finishTime || "-")}</td>
+              <td><strong>+${Number(rc.pts || 0)} pt</strong></td>
+            </tr>
+          `).join("")
+        : `<tr><td colspan="7" class="racer-sub">レース結果がまだ登録されていません</td></tr>`;
+
+      const cheers = state.cheers || [];
+      $("cheerWall").innerHTML = cheers.length
+        ? cheers.map((c) => `
+            <div class="cheer-card">
+              <div class="cheer-card-to">${c.to ? "🎯 " + escapeHtml(c.to) + " へ" : "📣 みんなへ"}</div>
+              <div class="cheer-card-msg">${escapeHtml(c.msg || "")}</div>
+              <div class="cheer-card-from">from ${escapeHtml(c.from || "応援者")} ${c.createdAt ? "（" + formatTime(c.createdAt) + "）" : ""}</div>
+            </div>
+          `).join("")
+        : `<div class="racer-sub">まだ応援メッセージはありません。最初の応援を送ろう！</div>`;
+
+      const sched = state.schedule && state.schedule.length ? state.schedule : DEFAULT_SCHEDULE;
+      $("scheduleList").innerHTML = sched.map((s) => `
+        <div class="tl-item">
+          <div class="tl-time">${escapeHtml(s.time || "")}</div>
+          <div>
+            <div class="tl-title">${escapeHtml(s.title || "")}</div>
+            <div class="tl-desc">${escapeHtml(s.desc || "")}</div>
+          </div>
+        </div>
+      `).join("");
+
+      syncCheerQueue();
+      updateTimestamp();
+    }
+
+    /* 応援メッセージキュー＆バナー制御 */
+    const cheerQueue = [];
+    let activeCheer = null;
+    let cheerStartTime = 0;
+    const CHEER_DURATION = 6500;
+    const seenCheerKeys = new Set();
+
+    function syncCheerQueue() {
+      const list = state.cheers || [];
+      const freshOnes = [];
+      for (const item of list) {
+        const key = item.id || `${item.msg}_${item.createdAt || ""}`;
+        if (!seenCheerKeys.has(key)) {
+          seenCheerKeys.add(key);
+          freshOnes.push(item);
+        }
+      }
+      for (let i = freshOnes.length - 1; i >= 0; i--) {
+        cheerQueue.push(freshOnes[i]);
+      }
+      if (!activeCheer && cheerQueue.length > 0) {
+        popNextCheer();
+      } else {
+        updateCheerBannerUI();
+      }
+    }
+
+    function popNextCheer() {
+      if (cheerQueue.length === 0) {
+        activeCheer = null;
+        updateCheerBannerUI();
+        return;
+      }
+      activeCheer = cheerQueue.shift();
+      cheerStartTime = performance.now();
+      updateCheerBannerUI();
+    }
+
+    function updateCheerBannerUI() {
+      $("cheerQueueInfo").textContent = `待機: ${cheerQueue.length}件`;
+      if (activeCheer) {
+        $("bannerQuote").textContent = `「${activeCheer.msg}」`;
+        const toPart = activeCheer.to ? `${activeCheer.to} へ ` : "";
+        const fromPart = `from ${activeCheer.from || "応援者"}`;
+        const timePart = activeCheer.createdAt ? `（${formatTime(activeCheer.createdAt)}）` : "";
+        $("bannerMeta").textContent = `${toPart}${fromPart} ${timePart}`.trim();
+      } else if (state.cheers && state.cheers.length > 0) {
+        const latest = state.cheers[0];
+        $("bannerQuote").textContent = `「${latest.msg}」`;
+        const toPart = latest.to ? `${latest.to} へ ` : "";
+        const fromPart = `from ${latest.from || "応援者"}`;
+        $("bannerMeta").textContent = `${toPart}${fromPart}`;
+        $("cheerProgressBar").style.width = "0%";
+      }
+    }
+
+    function tickCheerBanner(now) {
+      if (activeCheer) {
+        const elapsed = now - cheerStartTime;
+        const pct = Math.min(100, (elapsed / CHEER_DURATION) * 100);
+        $("cheerProgressBar").style.width = `${pct}%`;
+        if (elapsed >= CHEER_DURATION) {
+          popNextCheer();
+        }
+      }
+      requestAnimationFrame(tickCheerBanner);
+    }
+    requestAnimationFrame(tickCheerBanner);
+
+    /* 応援モーダル */
+    function openCheerModal() {
+      $("cheerModal").classList.add("open");
+      setTimeout(() => $("cheerMsg").focus(), 50);
+    }
+
+    function closeCheerModal() {
+      $("cheerModal").classList.remove("open");
+    }
+
+    $("openCheerBtn").addEventListener("click", openCheerModal);
+    $("cancelCheerBtn").addEventListener("click", closeCheerModal);
+    $("cheerModal").addEventListener("click", (e) => {
+      if (e.target === $("cheerModal")) closeCheerModal();
+    });
+
+    $("cheerForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const msg = $("cheerMsg").value.trim();
+      const to = $("cheerTo").value.trim();
+      const from = $("cheerFrom").value.trim() || "応援者";
+      if (!msg) return;
+
+      const submitBtn = $("submitCheerBtn");
+      submitBtn.disabled = true;
+
+      const payload = {
+        to,
+        from,
+        msg,
+        createdAt: Date.now(),
+        serverTs: serverTimestamp()
+      };
+
+      try {
+        await push(ref(db, "cheers"), payload);
+        cheerQueue.unshift(payload);
+        if (!activeCheer) popNextCheer();
+        else updateCheerBannerUI();
+
+        $("cheerMsg").value = "";
+        closeCheerModal();
+        showToast("💌 応援メッセージを送りました！");
+      } catch (err) {
+        console.error(err);
+        showToast("送信に失敗しました。通信環境をご確認ください。");
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+
+    /* プロジェクター投影モード＆自動送り */
+    const slideIds = [
+      "sec-overview",
+      "sec-individual",
+      "sec-team",
+      "sec-races",
+      "sec-cheers",
+      "sec-schedule"
+    ];
+    let currentSlideIdx = 0;
+    let autoSlideEnabled = true;
+    let slideIntervalMs = 8000;
+    let slideElapsedMs = 0;
+    let lastSlideTick = performance.now();
+
+    function applyProjectorSlide(idx) {
+      currentSlideIdx = ((idx % slideIds.length) + slideIds.length) % slideIds.length;
+      const targetId = slideIds[currentSlideIdx];
+
+      slideIds.forEach((id) => {
+        const el = $(id);
+        if (el) el.classList.toggle("p-active", id === targetId);
+      });
+
+      document.querySelectorAll("#projectorTabs .p-tab").forEach((btn, i) => {
+        btn.classList.toggle("active", i === currentSlideIdx);
+      });
+
+      slideElapsedMs = 0;
+    }
+
+    function setProjectorMode(enabled) {
+      document.body.classList.toggle("projector-mode", enabled);
+      $("toggleModeBtn").textContent = enabled ? "🖥️ 通常表示に戻す" : "🖥️ プロジェクター投影モード";
+      if (enabled) {
+        slideElapsedMs = 0;
+        lastSlideTick = performance.now();
+        applyProjectorSlide(currentSlideIdx);
+      }
+      showToast(enabled ? "プロジェクター投影モードに切替えました" : "通常表示に戻しました");
+    }
+
+    $("toggleModeBtn").addEventListener("click", () => {
+      setProjectorMode(!document.body.classList.contains("projector-mode"));
+    });
+
+    document.querySelectorAll("#projectorTabs .p-tab").forEach((btn, idx) => {
+      btn.addEventListener("click", () => applyProjectorSlide(idx));
+    });
+
+    $("prevSlideBtn").addEventListener("click", () => applyProjectorSlide(currentSlideIdx - 1));
+    $("nextSlideBtn").addEventListener("click", () => applyProjectorSlide(currentSlideIdx + 1));
+
+    $("toggleAutoBtn").addEventListener("click", () => {
+      autoSlideEnabled = !autoSlideEnabled;
+      $("toggleAutoBtn").textContent = autoSlideEnabled ? "⏸ 自動送り中" : "▶ 自動送り一時停止";
+      $("toggleAutoBtn").classList.toggle("primary", autoSlideEnabled);
+      lastSlideTick = performance.now();
+    });
+
+    $("slideIntervalSelect").addEventListener("change", (e) => {
+      slideIntervalMs = Number(e.target.value) || 8000;
+      slideElapsedMs = 0;
+    });
+
+    function tickProjectorSlides(now) {
+      const dt = now - lastSlideTick;
+      lastSlideTick = now;
+
+      if (document.body.classList.contains("projector-mode")) {
+        if (autoSlideEnabled) {
+          slideElapsedMs += dt;
+          if (slideElapsedMs >= slideIntervalMs) {
+            applyProjectorSlide(currentSlideIdx + 1);
+          }
+        }
+        const remSec = Math.max(0, Math.ceil((slideIntervalMs - slideElapsedMs) / 1000));
+        $("countdownText").textContent = autoSlideEnabled ? `次の画面まで ${remSec}秒` : "一時停止中";
+      }
+      requestAnimationFrame(tickProjectorSlides);
+    }
+    requestAnimationFrame(tickProjectorSlides);
+
+    /* Firebase リアルタイム購読 */
+    function normalizeArray(val) {
+      if (!val) return [];
+      if (Array.isArray(val)) return val.filter(Boolean);
+      return Object.entries(val).map(([id, v]) => ({ id, ...(v || {}) }));
+    }
+
+    onValue(ref(db, "announcement"), (snap) => {
+      const v = snap.val();
+      if (typeof v === "string" && v.trim()) {
+        state.announcement = v.trim();
+      } else if (v && typeof v.text === "string" && v.text.trim()) {
+        state.announcement = v.text.trim();
+      }
+      renderAll();
+    });
+
+    onValue(ref(db, "racers"), (snap) => {
+      const list = normalizeArray(snap.val());
+      if (list.length > 0) state.racers = list;
+      renderAll();
+    });
+
+    onValue(ref(db, "races"), (snap) => {
+      const list = normalizeArray(snap.val());
+      if (list.length > 0) {
+        state.races = list.sort((a, b) => (Number(b.createdAt || 0) - Number(a.createdAt || 0)));
+      }
+      renderAll();
+    });
+
+    onValue(ref(db, "cheers"), (snap) => {
+      const list = normalizeArray(snap.val());
+      if (list.length > 0) {
+        state.cheers = list.sort((a, b) => (Number(b.createdAt || 0) - Number(a.createdAt || 0)));
+      }
+      renderAll();
+    });
+
+    onValue(ref(db, "schedule"), (snap) => {
+      const list = normalizeArray(snap.val());
+      if (list.length > 0) state.schedule = list;
+      renderAll();
+    });
+
+    onValue(ref(db, ".info/connected"), (snap) => {
+      const connected = Boolean(snap.val());
+      $("syncStatusText").textContent = connected ? "リアルタイム同期中" : "再接続を確認中...";
+    });
+
+    renderAll();
+  </script>
+</body>
+</html>
